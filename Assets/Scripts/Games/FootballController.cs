@@ -34,6 +34,7 @@ public class FootballController : MonoBehaviour
     public Ball ball;
     public Transform goal;
     public SwipeController swipeController;
+    public Image goalImage;
 
     public Weather weather;
     public Locator locator;
@@ -105,7 +106,7 @@ public class FootballController : MonoBehaviour
         }
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
-        //OnGoalKeeperSelected();
+        //GoalKeeperSelected();
         OnStrikerSelected();
 #endif
     }
@@ -143,6 +144,11 @@ public class FootballController : MonoBehaviour
             });
             EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
         }
+    }
+
+    public void PlayGoalAnimation()
+    {
+        goalImage.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -226,9 +232,9 @@ public class FootballController : MonoBehaviour
         goalKeeper.UpdatePosition(position, handPosition);
     }
 
-    public void UpdateFootballPosition(Vector3 position)
+    public void UpdateFootballPosition(Vector3 position, Vector3 eulerAngle)
     {
-        ball.UpdatePosition(position);
+        ball.UpdatePosition(position, eulerAngle);
     }
 
     public void Shoot()
@@ -268,6 +274,7 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             ball.Reset();
+            striker.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
@@ -314,6 +321,7 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             ball.Reset();
+            striker.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
@@ -332,6 +340,7 @@ public class FootballController : MonoBehaviour
         goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
         scoreController.ResetMatch();
+        striker.Reset();
         ball.Reset();
         //if (playerType == PlayerType.Striker)
         //{
@@ -350,7 +359,7 @@ public class FootballController : MonoBehaviour
     public void PlayTransitionAnim()
     {
         Debug.Log("PlayTransitionAnim : " + transitionAnim);
-        transitionAnim.Play();
+        //transitionAnim.Play();
     }
 
     public bool CheckCurrentMatch()

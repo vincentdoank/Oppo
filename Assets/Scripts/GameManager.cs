@@ -324,9 +324,9 @@ public class GameManager : MonoBehaviour
         footballController.UpdateGoalKeeperPosition(position, handPosition);
     }
 
-    public void UpdateFootballPosition(Vector3 position)
+    public void UpdateFootballPosition(Vector3 position, Vector3 eulerAngle)
     {
-        footballController.UpdateFootballPosition(position);
+        footballController.UpdateFootballPosition(position, eulerAngle);
     }
 
     public void Shoot()

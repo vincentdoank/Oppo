@@ -15,7 +15,7 @@ public class GoalKeeper : Player
     public float maxAngle = 60f;
     public float smoothness = 5f;
     public float handSpeed = 2f;
-    public Rig rig;
+    //public Rig rig;
 
     private Vector3 calibrationOffset;
 
@@ -35,7 +35,7 @@ public class GoalKeeper : Player
     protected override void Update()
     {
         base.Update();
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             if (Application.platform == RuntimePlatform.Android)
             {
@@ -50,11 +50,18 @@ public class GoalKeeper : Player
 
             animator.SetFloat("Acceleration", acceleration.x);
         }
+        if (playerType == PlayerType.AI)
+        {
+            if (acceleration.x < -0.3f || acceleration.x > 0.3f)
+            {
+                ResetCheckIdle();
+            }
+        }
     }
 
     private void LateUpdate()
     {
-        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && playerType == PlayerType.Human)
         {
             UpdateTargetPointer();
             UpdateGoalKeeper();
@@ -96,7 +103,7 @@ public class GoalKeeper : Player
 
     private void UpdateGoalKeeper()
     {
-        Vector3 pos = transform.position;
+        Vector3 pos = goalKeeper.position;
         pos.x = target.position.x;
         goalKeeper.position = pos;
 
@@ -122,17 +129,21 @@ public class GoalKeeper : Player
     public void UpdatePosition(Vector3 position, Vector3 handPosition)
     {
         //goalKeeper.position = position;
-        goalKeeper.position = Vector3.Lerp(goalKeeper.position, position, Time.deltaTime * 30f);
-        hands.position = handPosition;
-
-        if (position.x > goalKeeper.position.x + 0.1f)
+        if (position.x > goalKeeper.position.x + 0.15f)
         {
             animator.SetFloat("Acceleration", 0.2f);
         }
-        else if(position.x < goalKeeper.position.x - 0.1f)
+        else if (position.x < goalKeeper.position.x - 0.15f)
         {
             animator.SetFloat("Acceleration", -0.2f);
         }
+        else
+        {
+            animator.SetFloat("Acceleration", 0f);
+        }
+        goalKeeper.position = Vector3.Lerp(goalKeeper.position, position, Time.deltaTime * 30f);
+        hands.position = handPosition;
+
     }
 
     public void Calibrate()
@@ -144,20 +155,25 @@ public class GoalKeeper : Player
     {
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
+            Debug.LogWarning("goalkeeper AI");
             Vector3 targetPos = FootballController.Instance.ball.transform.position;
-            Vector3 pos = transform.position;
+            Vector3 pos = goalKeeper.position;
 
-            targetPos.y = pos.y;
-            transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 5f);
-
-            if (targetPos.x > goalKeeper.position.x + 0.1f)
+            if (targetPos.x > goalKeeper.position.x + 0.15f)
             {
                 animator.SetFloat("Acceleration", 0.2f);
             }
-            else if (targetPos.x < goalKeeper.position.x - 0.1f)
+            else if (targetPos.x < goalKeeper.position.x - 0.15f)
             {
                 animator.SetFloat("Acceleration", -0.2f);
             }
+            else
+            {
+                animator.SetFloat("Acceleration", 0f);
+            }
+
+            targetPos.y = pos.y;
+            goalKeeper.position = Vector3.Lerp(goalKeeper.position, targetPos, Time.deltaTime * 5f);
         }
     }
 
@@ -174,19 +190,19 @@ public class GoalKeeper : Player
 
     public override void PlayIdleAnimation()
     {
-        rig.weight = 1f;
+        //rig.weight = 1f;
         base.PlayIdleAnimation();
     }
 
     public override void PlayLoseAnimation()
     {
-        rig.weight = 0f;
+        //rig.weight = 0f;
         base.PlayLoseAnimation();
     }
 
     public override void PlayWinAnimation()
     {
-        rig.weight = 0f;
+        //rig.weight = 0f;
         base.PlayWinAnimation();
     }
 

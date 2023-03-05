@@ -57,6 +57,7 @@ public class TestCurveLine : MonoBehaviour
         {
             Reset();
             ball.Reset();
+            //striker.Reset();
         }
 
         ball.GetComponent<Rigidbody>().isKinematic = false;

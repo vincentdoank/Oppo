@@ -79,7 +79,7 @@ public class Ball : MonoBehaviour
         if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
             rigidBody.isKinematic = false;
-            EventManager.onFootballUpdated?.Invoke(GameManager.Instance.GetClientId(), transform.position);
+            EventManager.onFootballUpdated?.Invoke(GameManager.Instance.GetClientId(), transform.position, transform.localEulerAngles);
         }
         else
         {
@@ -87,7 +87,7 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public void UpdatePosition(Vector3 position)
+    public void UpdatePosition(Vector3 position, Vector3 eulerAngle)
     {
         if (isShooting)
         {
@@ -97,5 +97,6 @@ public class Ball : MonoBehaviour
         {
             transform.position = position;
         }
+        transform.localEulerAngles = eulerAngle;
     }
 }

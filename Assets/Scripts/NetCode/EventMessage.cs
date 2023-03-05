@@ -308,7 +308,7 @@ namespace WTI.NetCode
             }
         }
 
-        private void SendFootballPosition(ulong senderClientId, Vector3 position)
+        private void SendFootballPosition(ulong senderClientId, Vector3 position, Vector3 eulerAngle)
         {
             var writer = new FastBufferWriter(1100, Allocator.Temp);
             var customMessagingManager = NetworkManager.CustomMessagingManager;
@@ -320,6 +320,7 @@ namespace WTI.NetCode
                     // Write our message type
                     writer.WriteValueSafe(FOOTBALL_POSITION_EVENT_CODE);
                     writer.WriteValueSafe(position);
+                    writer.WriteValueSafe(eulerAngle);
 
                     if (IsServer)
                     {
@@ -327,14 +328,16 @@ namespace WTI.NetCode
                         List<ulong> clientsIds = new List<ulong>();
                         clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
                         clientsIds.Remove(senderClientId);
-                        customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                        //customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                        customMessagingManager.SendUnnamedMessage(clientsIds, writer, NetworkDelivery.ReliableFragmentedSequenced);
                     }
                     else
                     {
                         if (NetworkManager.IsConnectedClient)
                         {
                             //customMessagingManager.SendUnnamedMessageToAll(writer);
-                            customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                            //customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                            customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableFragmentedSequenced);
                         }
                     }
                 }
@@ -849,11 +852,12 @@ namespace WTI.NetCode
         {
             Debug.Log("OnReceivedFootballPositionEventMessage message");
             reader.ReadValueSafe(out Vector3 position);
+            reader.ReadValueSafe(out Vector3 eulerAngle);
             if (IsServer)
             {
-                SendFootballPosition(clientId, position);
+                SendFootballPosition(clientId, position, eulerAngle);
             }
-            OnFootballPositionUpdated(position);
+            OnFootballPositionUpdated(position, eulerAngle);
         }
 
         protected void OnReceivedShootEventMessage(ulong clientId, FastBufferReader reader)
@@ -1045,10 +1049,10 @@ namespace WTI.NetCode
             GameManager.Instance.UpdateGoalKeeperPosition(position, handPosition);
         }
 
-        private void OnFootballPositionUpdated(Vector3 position)
+        private void OnFootballPositionUpdated(Vector3 position, Vector3 eulerAngle)
         {
             //Debug.Log("ball position : " + position);
-            GameManager.Instance.UpdateFootballPosition(position);
+            GameManager.Instance.UpdateFootballPosition(position, eulerAngle);
         }
 
         private void OnShootTriggered()

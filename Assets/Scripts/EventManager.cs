@@ -23,7 +23,7 @@ public class EventManager : MonoBehaviour
     public static Action<ulong, string, Vector2> onEncodedCapturedPhotoSent;
     public static Action<ulong, Vector3, Vector3> onGoalKeeperPositionUpdated;
     public static Action<ulong> onShootAnimationPlayed;
-    public static Action<ulong, Vector3> onFootballUpdated;
+    public static Action<ulong, Vector3, Vector3> onFootballUpdated;
     public static Action onPhotoCaptured;
 
     public static Action onUseCameraSelected;

@@ -20,6 +20,11 @@ public class Striker : Player
         swipeController.onSwipeCompleted -= PlayShootAnimation;
     }
 
+    public void Reset()
+    {
+        animator.SetBool("Shoot", false);
+    }
+
     public void PlayShootAnimation(Vector3 shootPosition)
     {
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
@@ -29,13 +34,13 @@ public class Striker : Player
         FootballController.Instance.swipeController.CanSwipe(false);
         FootballController.Instance.scoreController.time.Pause(true);
         this.shootPosition = shootPosition;
-        animator.SetTrigger("Shoot");
+        animator.SetBool("Shoot", true);
     }
 
     public void PlayShootAnimation()
     {
         Debug.Log("animator : " + animator);
-        animator.SetTrigger("Shoot");
+        animator.SetBool("Shoot", true);
     }
 
     protected override void Update()
@@ -49,7 +54,7 @@ public class Striker : Player
 
     protected override void DoAction()
     {
-        if (FootballController.Instance.striker)
+        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
             Debug.Log("striker do action");
             Vector2 offset = Random.insideUnitCircle * 6f;
@@ -69,10 +74,10 @@ public class Striker : Player
         ball.Shoot(shootPosition);
     }
 
-    private void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
-        style.normal.textColor = Color.blue;
-        GUI.Label(new Rect(60, 300, 200, 60), FootballController.Instance.playerType.ToString(), style);
-    }
+    //private void OnGUI()
+    //{
+    //    GUIStyle style = new GUIStyle();
+    //    style.normal.textColor = Color.blue;
+    //    GUI.Label(new Rect(60, 300, 200, 60), FootballController.Instance.playerType.ToString(), style);
+    //}
 }

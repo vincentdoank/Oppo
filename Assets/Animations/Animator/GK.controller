@@ -96,10 +96,10 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
-  m_ExitTime: 0.94584835
-  m_HasExitTime: 1
+  m_ExitTime: 0
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
-  m_InterruptionSource: 2
+  m_InterruptionSource: 1
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
 --- !u!1102 &-6141546091394205364
@@ -178,10 +178,10 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
-  m_ExitTime: 0.94584835
-  m_HasExitTime: 1
+  m_ExitTime: 0
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
-  m_InterruptionSource: 2
+  m_InterruptionSource: 1
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
 --- !u!1101 &-3459808987079994909
@@ -223,25 +223,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Lose
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Shoot
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Acceleration
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer

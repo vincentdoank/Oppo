@@ -42,6 +42,11 @@ public class Tweening : MonoBehaviour
         tween.OnComplete(() => onTweenCompleted?.Invoke());
     }
 
+    public virtual void Reset()
+    {
+
+    }
+
     public virtual void Play()
     {
         

@@ -101,6 +101,7 @@ public class ScoreController : MonoBehaviour
                     player1Score += 1;
                     player1Hud.SetScore(this, true, player1Score, round, null);
                     FootballController.Instance.goal.gameObject.SetActive(false);
+                    FootballController.Instance.PlayGoalAnimation();
                     player2Hud.SetScore(this, false, player2Score, round, () => StartCoroutine(FootballController.Instance.WaitForResetMatch()));
                     break;
                 case Player.player2:
