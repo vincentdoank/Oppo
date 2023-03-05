@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class GoalKeeper : Player
 {
@@ -14,18 +15,14 @@ public class GoalKeeper : Player
     public float maxAngle = 60f;
     public float smoothness = 5f;
     public float handSpeed = 2f;
-
-    private float aiSpeed = 10f;
-    private float minAiSpeed = 10f;
-    private float maxAiSpeed = 25f;
-    private float changeSpeedInterval = 3f;
-    private float elapsedChangeAiSpeed = 0f;
+    public Rig rig;
 
     private Vector3 calibrationOffset;
 
     private void Start()
     {
         Debug.LogWarning("Start");
+        animator = GetComponent<Animator>();
         EventManager.onCalibrate += Calibrate;
     }
 
@@ -38,36 +35,26 @@ public class GoalKeeper : Player
     protected override void Update()
     {
         base.Update();
-        if (playerType == PlayerType.Human)
+        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
         {
-            if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+            if (Application.platform == RuntimePlatform.Android)
             {
-                if (Application.platform == RuntimePlatform.Android)
-                {
-                    acceleration.x = Input.acceleration.x - calibrationOffset.x;
-                    acceleration.y = Input.acceleration.y - calibrationOffset.y;
-                }
-                else if (Application.platform == RuntimePlatform.IPhonePlayer)
-                {
-                    acceleration.x = -Input.acceleration.y - calibrationOffset.x;
-                    acceleration.y = Input.acceleration.z - calibrationOffset.z;
-                }
+                acceleration.x = Input.acceleration.x - calibrationOffset.x;
+                acceleration.y = Input.acceleration.y - calibrationOffset.y;
             }
-        }
-        else
-        {
-            elapsedChangeAiSpeed += Time.deltaTime;
-            if (elapsedChangeAiSpeed >= changeSpeedInterval + Random.Range(-1f, 1f))
+            else if (Application.platform == RuntimePlatform.IPhonePlayer)
             {
-                aiSpeed = Random.Range(minAiSpeed, maxAiSpeed);
-                elapsedChangeAiSpeed = 0f;
+                acceleration.x = -Input.acceleration.y - calibrationOffset.x;
+                acceleration.y = Input.acceleration.z - calibrationOffset.z;
             }
+
+            animator.SetFloat("Acceleration", acceleration.x);
         }
     }
 
     private void LateUpdate()
     {
-        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && playerType == PlayerType.Human)
+        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
         {
             UpdateTargetPointer();
             UpdateGoalKeeper();
@@ -109,7 +96,7 @@ public class GoalKeeper : Player
 
     private void UpdateGoalKeeper()
     {
-        Vector3 pos = goalKeeper.position;
+        Vector3 pos = transform.position;
         pos.x = target.position.x;
         goalKeeper.position = pos;
 
@@ -119,7 +106,8 @@ public class GoalKeeper : Player
 
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
         {
-            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, hands.position);
+            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, target.position);
+            Debug.LogWarning("Send GK pos");
         }
         //float angle = acceleration.x * 60f * 2f;
         //if (angle > maxAngle) angle = maxAngle;
@@ -133,8 +121,18 @@ public class GoalKeeper : Player
 
     public void UpdatePosition(Vector3 position, Vector3 handPosition)
     {
-        goalKeeper.position = position;
+        //goalKeeper.position = position;
+        goalKeeper.position = Vector3.Lerp(goalKeeper.position, position, Time.deltaTime * 30f);
         hands.position = handPosition;
+
+        if (position.x > goalKeeper.position.x + 0.1f)
+        {
+            animator.SetFloat("Acceleration", 0.2f);
+        }
+        else if(position.x < goalKeeper.position.x - 0.1f)
+        {
+            animator.SetFloat("Acceleration", -0.2f);
+        }
     }
 
     public void Calibrate()
@@ -144,22 +142,52 @@ public class GoalKeeper : Player
 
     protected override void DoAction()
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             Vector3 targetPos = FootballController.Instance.ball.transform.position;
-            Vector3 pos = goalKeeper.position;
+            Vector3 pos = transform.position;
 
             targetPos.y = pos.y;
-            targetPos.z = pos.z;
-            goalKeeper.position = Vector3.Lerp(goalKeeper.position, targetPos, Time.deltaTime * aiSpeed);
+            transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 5f);
 
-            Vector3 handPos = hands.position;
-            handPos.y = target.position.y;
-            hands.position = Vector3.Lerp(hands.position, handPos, Time.deltaTime * aiSpeed);
-
-            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), goalKeeper.position, hands.position);
-
+            if (targetPos.x > goalKeeper.position.x + 0.1f)
+            {
+                animator.SetFloat("Acceleration", 0.2f);
+            }
+            else if (targetPos.x < goalKeeper.position.x - 0.1f)
+            {
+                animator.SetFloat("Acceleration", -0.2f);
+            }
         }
+    }
+
+    protected override bool CheckIdle()
+    {
+        Vector3 acc = acceleration;
+        if (Mathf.Abs(acc.x - accelerometerTolerance) > 0 || Mathf.Abs(acc.y - accelerometerTolerance) > 0 || Mathf.Abs(acc.z - accelerometerTolerance) > 0)
+        {
+            ResetCheckIdle();
+            return false;
+        }
+        return base.CheckIdle();
+    }
+
+    public override void PlayIdleAnimation()
+    {
+        rig.weight = 1f;
+        base.PlayIdleAnimation();
+    }
+
+    public override void PlayLoseAnimation()
+    {
+        rig.weight = 0f;
+        base.PlayLoseAnimation();
+    }
+
+    public override void PlayWinAnimation()
+    {
+        rig.weight = 0f;
+        base.PlayWinAnimation();
     }
 
     //protected override bool CheckIdle()

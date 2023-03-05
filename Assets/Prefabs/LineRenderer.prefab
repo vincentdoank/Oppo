@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8514859301334701934}
   - component: {fileID: 8514859301334701935}
-  - component: {fileID: 8514859301334701937}
   - component: {fileID: 8514859301334701936}
   m_Layer: 5
   m_Name: LineRenderer
@@ -36,6 +35,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &8514859301334701935
 LineRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -127,23 +127,13 @@ LineRenderer:
     numCapVertices: 0
     alignment: 0
     textureMode: 0
+    textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
+  m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &8514859301334701937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8514859301334701932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0fc3d223ec92f64ab2b135a9c03407d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  width: 0.2
+  m_ApplyActiveColorSpace: 0
 --- !u!114 &8514859301334701936
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Striker : Player
 {
-    public Transform striker;
     public Ball ball;
     public SwipeController swipeController;
 
-    public Animator animator;
     private Vector3 shootPosition;
 
     private void Start()
     {
-        animator = GetComponent<Animator>(); 
+        animator = GetComponent<Animator>();
         swipeController.onSwipeCompleted += PlayShootAnimation;
     }
 
@@ -51,7 +49,7 @@ public class Striker : Player
 
     protected override void DoAction()
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if (FootballController.Instance.striker)
         {
             Debug.Log("striker do action");
             Vector2 offset = Random.insideUnitCircle * 6f;

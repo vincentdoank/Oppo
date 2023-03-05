@@ -20,9 +20,10 @@ public class Player : MonoBehaviour
 
     private float checkIdleTime = 30f;
     protected float accelerometerTolerance = 0.1f;
+    protected bool pauseAi = false;
     private float elapsedCheckIdleTime = 0f;
 
-    public Image flagImage;
+    public Animator animator;
 
     private void Start()
     {
@@ -32,7 +33,6 @@ public class Player : MonoBehaviour
 
     protected virtual void Update()
     {
-        Debug.Log("playerType : " + FootballController.Instance.playerType.ToString());
         if (playerType == PlayerType.AI)
         {
             if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
@@ -72,7 +72,6 @@ public class Player : MonoBehaviour
     {
         elapsedCheckIdleTime = 0;
         playerType = PlayerType.Human;
-        flagImage.color = Color.blue;
     }
 
     protected virtual bool CheckIdle()
@@ -80,16 +79,35 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ResetCheckIdle();
-            flagImage.color = Color.blue;
+            //flagImage.color = Color.blue;
             return false;
         }
         elapsedCheckIdleTime += Time.deltaTime;
         if (elapsedCheckIdleTime >= checkIdleTime)
         {
             playerType = PlayerType.AI;
-            flagImage.color = Color.red;
+            //flagImage.color = Color.red;
         }
 
         return true;
+    }
+
+    public virtual void PlayWinAnimation()
+    {
+        animator.SetBool("Win", true);
+        pauseAi = true;
+    }
+
+    public virtual void PlayLoseAnimation()
+    {
+        animator.SetBool("Lose", true);
+        pauseAi = true;
+    }
+
+    public virtual void PlayIdleAnimation()
+    {
+        animator.SetBool("Win", false);
+        animator.SetBool("Lose", false);
+        pauseAi = false;
     }
 }

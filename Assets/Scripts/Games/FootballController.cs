@@ -40,6 +40,7 @@ public class FootballController : MonoBehaviour
 
     public SkyController skyController;
     public ScoreController scoreController;
+    public ScoreController screenScoreController;
     public TweenFade transitionAnim;
     public List<MatchData> matchDataList = new List<MatchData>();
 
@@ -64,6 +65,19 @@ public class FootballController : MonoBehaviour
     private void Start()
     {
         Instance = this;
+
+        Debug.LogWarning("runtime : " + Application.platform);
+        if (Application.platform != RuntimePlatform.Android)
+        {
+            scoreController.gameObject.SetActive(false);
+            screenScoreController.gameObject.SetActive(true);
+            scoreController = screenScoreController;
+        }
+        else
+        {
+            screenScoreController.gameObject.SetActive(false);
+            scoreController.gameObject.SetActive(true);
+        }
 
         strikerButton.onClick.AddListener(OnStrikerSelected);
         goalKeeperButton.onClick.AddListener(OnGoalKeeperSelected);
@@ -91,8 +105,8 @@ public class FootballController : MonoBehaviour
         }
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
-        OnGoalKeeperSelected();
-        //OnStrikerSelected();
+        //OnGoalKeeperSelected();
+        OnStrikerSelected();
 #endif
     }
 
@@ -138,6 +152,7 @@ public class FootballController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= shootTimer)
             {
+                Debug.Log("check current match : " + CheckCurrentMatch());
                 if (!CheckCurrentMatch())
                 {
                     scoreController.AddScore(ScoreController.Player.player2);
@@ -153,7 +168,12 @@ public class FootballController : MonoBehaviour
                     EventManager.onFootballDataSent?.Invoke(data);
                     //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), scoreController.GetPlayer1Score(), scoreController.GetPlayer2Score());
                 }
-                NextRound();
+                Debug.Log("Score : " + scoreController.GetPlayer1Score() + " " + scoreController.GetPlayer2Score());
+                if (scoreController.GetPlayer1Score() + scoreController.GetPlayer2Score() < 5 && CheckCurrentMatch())
+                {
+                    Debug.Log("trying to go to next round");
+                    NextRound();
+                }
                 ball.isShooting = false;
             }
         }
@@ -260,11 +280,27 @@ public class FootballController : MonoBehaviour
             EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
             EventManager.onNextRoundStarted?.Invoke(GameManager.Instance.GetClientId());
         }
-        goal.gameObject.SetActive(true);
+
+    }
+
+    public void PlayWinAnimation()
+    {
+        if (scoreController.GetPlayer1Score() > scoreController.GetPlayer2Score())
+        {
+            striker.PlayWinAnimation();
+            goalKeeper.PlayLoseAnimation();
+        }
+        else
+        {
+            striker.PlayLoseAnimation();
+            goalKeeper.PlayWinAnimation();
+        }
     }
 
     public void ResetMatch()
     {
+        striker.PlayIdleAnimation();
+        goalKeeper.PlayIdleAnimation();
         Debug.Log("Reset Match");
         if (NetworkController.Instance.GetClientId() == 1)
         {
@@ -281,24 +317,27 @@ public class FootballController : MonoBehaviour
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
-        gameObject.SetActive(true);
     }
 
     public IEnumerator WaitForResetMatch()
     {
         Debug.Log("Reset Match");
+        PlayWinAnimation();
+        swipeController.CanSwipe(false);
         elapsedTime = 0;
         ball.isShooting = false;
         yield return new WaitForSeconds(3f);
-        PlayTransitionAnim();
+        //PlayTransitionAnim();
+        striker.PlayIdleAnimation();
+        goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
         scoreController.ResetMatch();
         ball.Reset();
-        if (playerType == PlayerType.Striker)
-        {
-            swipeController.CanSwipe(true);
-            swipeController.ClearLine();
-        }
+        //if (playerType == PlayerType.Striker)
+        //{
+        //    swipeController.CanSwipe(true);
+        //    swipeController.ClearLine();
+        //}
 
         scoreController.time.SetTime(10, () =>
         {
@@ -418,5 +457,9 @@ public class FootballController : MonoBehaviour
         strikerButton.interactable = !data.isStrikerSelected;
         goalKeeperButton.interactable = !data.isGoalKeeperSelected;
         scoreController.SetScore(data.matchDataList, data.p1Score, data.p2Score);
+        if (data.p1Score + data.p2Score >= 5)
+        {
+            PlayWinAnimation();
+        }
     }
 }
