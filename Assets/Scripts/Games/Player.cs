@@ -76,6 +76,8 @@ public class Player : MonoBehaviour
 
     protected virtual bool CheckIdle()
     {
+        if(FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        Debug.LogWarning("CheckAI : " + playerType);
         if (Input.GetMouseButtonDown(0))
         {
             ResetCheckIdle();

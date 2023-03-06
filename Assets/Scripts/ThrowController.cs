@@ -68,15 +68,15 @@ public class ThrowController : MonoBehaviour
         }
     }
 
-    private void OnGUI()
-    {
-        if (!GameManager.Instance.IsServer)
-        {
-            GUIStyle style = new GUIStyle();
-            style.fontSize = 50;
-            style.normal.textColor = Color.white;
+    //private void OnGUI()
+    //{
+    //    if (!GameManager.Instance.IsServer)
+    //    {
+    //        GUIStyle style = new GUIStyle();
+    //        style.fontSize = 50;
+    //        style.normal.textColor = Color.white;
 
-            GUI.Label(new Rect(40, 40, 300, 60), "isThrown : " + thrown, style);
-        }
-    }
+    //        GUI.Label(new Rect(40, 40, 300, 60), "isThrown : " + thrown, style);
+    //    }
+    //}
 }

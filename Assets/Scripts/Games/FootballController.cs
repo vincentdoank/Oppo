@@ -106,8 +106,8 @@ public class FootballController : MonoBehaviour
         }
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
-        //GoalKeeperSelected();
-        OnStrikerSelected();
+        //OnGoalKeeperSelected();
+        //OnStrikerSelected();
 #endif
     }
 
@@ -274,7 +274,6 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             ball.Reset();
-            striker.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
@@ -321,7 +320,6 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             ball.Reset();
-            striker.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
@@ -340,7 +338,6 @@ public class FootballController : MonoBehaviour
         goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
         scoreController.ResetMatch();
-        striker.Reset();
         ball.Reset();
         //if (playerType == PlayerType.Striker)
         //{

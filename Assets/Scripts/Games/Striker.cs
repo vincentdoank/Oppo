@@ -20,11 +20,6 @@ public class Striker : Player
         swipeController.onSwipeCompleted -= PlayShootAnimation;
     }
 
-    public void Reset()
-    {
-        animator.SetBool("Shoot", false);
-    }
-
     public void PlayShootAnimation(Vector3 shootPosition)
     {
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
@@ -34,13 +29,13 @@ public class Striker : Player
         FootballController.Instance.swipeController.CanSwipe(false);
         FootballController.Instance.scoreController.time.Pause(true);
         this.shootPosition = shootPosition;
-        animator.SetBool("Shoot", true);
+        animator.SetTrigger("Shoot");
     }
 
     public void PlayShootAnimation()
     {
         Debug.Log("animator : " + animator);
-        animator.SetBool("Shoot", true);
+        animator.SetTrigger("Shoot");
     }
 
     protected override void Update()

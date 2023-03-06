@@ -153,6 +153,7 @@ public class GoalKeeper : Player
 
     protected override void DoAction()
     {
+        Debug.LogWarning("isPauseAI");
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             Debug.LogWarning("goalkeeper AI");
