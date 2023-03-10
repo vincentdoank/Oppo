@@ -35,10 +35,13 @@ public class FootballController : MonoBehaviour
     public Transform goal;
     public SwipeController swipeController;
     public Image goalImage;
+    public Image missImage;
+    public Image safeImage;
 
     public Weather weather;
     public Locator locator;
 
+    public ParticleSystem touchEffect;
     public SkyController skyController;
     public ScoreController scoreController;
     public ScoreController screenScoreController;
@@ -107,7 +110,7 @@ public class FootballController : MonoBehaviour
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
         //OnGoalKeeperSelected();
-        //OnStrikerSelected();
+        OnStrikerSelected();
 #endif
     }
 
@@ -149,6 +152,16 @@ public class FootballController : MonoBehaviour
     public void PlayGoalAnimation()
     {
         goalImage.gameObject.SetActive(true);
+    }
+
+    public void PlayMissAnimation()
+    {
+        missImage.gameObject.SetActive(true);
+    }
+
+    public void PlaySafeAnimation()
+    {
+        safeImage.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -273,6 +286,7 @@ public class FootballController : MonoBehaviour
         scoreController.NextRound();
         if (playerType == PlayerType.Striker)
         {
+            goalKeeper.Release();
             ball.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
@@ -317,6 +331,7 @@ public class FootballController : MonoBehaviour
         matchDataList.Clear();
         scoreController.ResetMatch();
         ball.isShooting = false;
+        goalKeeper.Release();
         if (playerType == PlayerType.Striker)
         {
             ball.Reset();
@@ -338,6 +353,7 @@ public class FootballController : MonoBehaviour
         goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
         scoreController.ResetMatch();
+        goalKeeper.Release();
         ball.Reset();
         //if (playerType == PlayerType.Striker)
         //{
@@ -350,7 +366,7 @@ public class FootballController : MonoBehaviour
             EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
         });
         EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
-        EventManager.onResetMatchStarted?.Invoke(GameManager.Instance.GetClientId());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+        EventManager.onResetMatchStarted?.Invoke(GameManager.Instance.GetClientId());
     }
 
     public void PlayTransitionAnim()
@@ -412,6 +428,16 @@ public class FootballController : MonoBehaviour
     public void OnWeatherChanged(int weather)
     {
         skyController.OnWeatherChanged(weather);
+    }
+
+    public void OnBallResetted()
+    {
+        ball.PlayPuffParticle();
+    }
+
+    public void OnBallCaught()
+    {
+        goalKeeper.Catch();
     }
 
     public void OnDisconnected(ulong clientId)

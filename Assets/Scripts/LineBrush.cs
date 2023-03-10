@@ -77,12 +77,14 @@ public class LineBrush : SimplePooling
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
                 LineRenderer lineRenderer = SpawnLine(worldPos);
                 worldPos.z = 0;
-                lineRenderer.positionCount = 2;
-                lineRenderer.SetPosition(0, worldPos / 2);
-                lineRenderer.SetPosition(1, worldPos / 2);
+                lineRenderer.positionCount = 1;
+                lineRenderer.SetPosition(0, worldPos);
 
                 positionList.Add(worldPos);
-                positionList.Add(worldPos);
+                ParticleSystem touchEffect = FootballController.Instance.touchEffect;
+                touchEffect.transform.position = worldPos;
+                touchEffect.Play();
+
             }
 
             if (elapsedFrameTime >= frame / 120f)
@@ -100,7 +102,9 @@ public class LineBrush : SimplePooling
                         lineList[lineList.Count - 1].positionCount += 1;
                         lineList[lineList.Count - 1].SetPosition(lineList[lineList.Count - 1].positionCount - 1, worldPos);
 
-                        positionList.Add(worldPos/2);
+                        positionList.Add(worldPos);
+                        Transform touchEffect = FootballController.Instance.touchEffect.transform;
+                        touchEffect.position = worldPos;
                     }
                 }
                 elapsedFrameTime = 0f;
@@ -112,14 +116,29 @@ public class LineBrush : SimplePooling
 
             if (Input.GetMouseButtonUp(0))
             {
+                //Reflect();
                 isTouchReleased = true;
                 positionList.Clear();
+                FootballController.Instance.touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             }
 
             //if (isTouchReleased)
             //{
             //    CheckElapsedTime();
             //}
+        }
+    }
+
+    public void Reflect()
+    {
+        Vector3 offset = new Vector3(2f, 0f, 0f);
+        LineRenderer line = SpawnLine(Vector3.zero);
+        line.startWidth = width / 2f;
+        line.endWidth = width / 2f;
+        for (int i = 0; i < positionList.Count; i++)
+        {
+            line.positionCount += 1;
+            line.SetPosition(line.positionCount - 1, positionList[i] / 2 + offset);
         }
     }
 
@@ -178,7 +197,7 @@ public class LineBrush : SimplePooling
         for (int i = 0; i < points.Count; i++)
         {
             lineList[index].positionCount = points.Count;
-            lineList[index].SetPosition(i, points[i] + screenOffset);
+            lineList[index].SetPosition(i, points[i] / 2 + screenOffset);
         }
     }
 }

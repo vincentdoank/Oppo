@@ -10,12 +10,16 @@ public class GoalKeeper : Player
     public Transform target;
     public Transform goalKeeper;
     public Transform hands;
+    public Transform leftHand;
+    public Transform rightHand;
+    public Vector3 leftHandOffset;
+    public Vector3 rightHandOffset;
     public float minX, maxX, minY, maxY;
     public float minAngle = -60f;
     public float maxAngle = 60f;
     public float smoothness = 5f;
     public float handSpeed = 2f;
-    //public Rig rig;
+    public Rig rig;
 
     private Vector3 calibrationOffset;
 
@@ -198,13 +202,34 @@ public class GoalKeeper : Player
     public override void PlayLoseAnimation()
     {
         //rig.weight = 0f;
+        Release();
         base.PlayLoseAnimation();
     }
 
     public override void PlayWinAnimation()
     {
         //rig.weight = 0f;
+        Release();
         base.PlayWinAnimation();
+    }
+
+    public void Catch()
+    {
+        rig.weight = 1f;
+        FootballController.Instance.ball.Stop();
+        leftHand.localPosition = leftHand.InverseTransformPoint(FootballController.Instance.ball.transform.position) + leftHandOffset;
+        rightHand.localPosition = rightHand.InverseTransformPoint(FootballController.Instance.ball.transform.position) + rightHandOffset;
+        if (GameManager.Instance.IsServer)
+        {
+            EventManager.onBallCaught?.Invoke(GameManager.Instance.GetClientId());
+        }
+    }
+
+    public void Release()
+    {
+        leftHand.localPosition = leftHandOffset;
+        rightHand.localPosition = rightHandOffset;
+        rig.weight = 0f;
     }
 
     //protected override bool CheckIdle()

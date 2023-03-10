@@ -32,6 +32,28 @@ public class TweenFade : Tweening
         base.Init();
     }
 
+    public override void Reset()
+    {
+        base.Reset();
+        Color fromColor;
+        switch (fadeType)
+        {
+            case FadeType.canvasGroup:
+                canvasGroup.alpha = from;
+                break;
+            case FadeType.graphic:
+                fromColor = graphic.color;
+                fromColor.a = from;
+                graphic.color = fromColor;
+                break;
+            case FadeType.spriteRenderer:
+                fromColor = spriteRenderer.color;
+                fromColor.a = from;
+                spriteRenderer.color = fromColor;
+                break;
+        }
+    }
+
     public override void Play()
     {
         Color fromColor;

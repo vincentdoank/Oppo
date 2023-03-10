@@ -9,9 +9,9 @@ public class Ball : MonoBehaviour
     public Vector3 DefPos { get; private set; }
 
     private float smoothness = 100f;
+    private bool stopUpdate = false;
     public bool isShooting;
-
-    public float test = 0;
+    public ParticleSystem puffEffect;
 
     private void Start()
     {
@@ -23,14 +23,37 @@ public class Ball : MonoBehaviour
     public void Reset()
     {
         Debug.Log("reset");
+        PlayPuffParticle();
+        StartCoroutine(WaitForReset());
+        EventManager.onBallPositionResetted(GameManager.Instance.GetClientId());
+    }
+
+    public void PlayPuffParticle()
+    {
+        puffEffect.Play();
+    }
+
+    private IEnumerator WaitForReset()
+    {
+        yield return new WaitForSeconds(0.1f);
         rigidBody.velocity = Vector3.zero;
         rigidBody.angularVelocity = Vector3.zero;
         transform.position = DefPos;
     }
 
+    public void Stop()
+    {
+        stopUpdate = true;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+        rigidBody.isKinematic = true;
+    }
+
     public void Shoot(Vector3 shootPosition)
     {
-        Reset();
+        //Reset();
+        stopUpdate = false;
+        rigidBody.isKinematic = false;
         isShooting = true;
         FootballController.Instance.scoreController.time.Pause(true);
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
@@ -59,7 +82,7 @@ public class Ball : MonoBehaviour
 
     public void Shoot()
     {
-        Reset();
+        //Reset();
         isShooting = true;
         FootballController.Instance.scoreController.time.Pause(true);
         Vector3 upForce = Vector3.up * 5f;

@@ -31,6 +31,11 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
     //    Vector3 direction = fromPosition - toPosition;
     //}
 
+    private void Start()
+    {
+        swipeLineRenderer.startWidth = swipeLineRenderer.endWidth = 0.1f;
+    }
+
     public void CanSwipe(bool canSwipe)
     {
         this.canSwipe = canSwipe;
@@ -38,7 +43,6 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
 
     private void Update()
     {
-        Debug.Log("canswipe : " + canSwipe);
         if (!canSwipe || FootballController.Instance.playerType != FootballController.PlayerType.Striker)
         {
             return;
@@ -59,6 +63,9 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
                 swipeLineRenderer.SetPosition(1, worldPos);
 
                 fromPosition = worldPos;
+                ParticleSystem touchEffect = FootballController.Instance.touchEffect;
+                touchEffect.transform.position = worldPos;
+                touchEffect.Play();
             }
             else
             {
@@ -70,8 +77,6 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
         {
             float topX;
             float topY;
-
-            Vector3 p = Vector3.zero;
 
             if (toPosition.x > fromPosition.x)
             {
@@ -131,7 +136,10 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
             }
 
             swipeLineRenderer.transform.position = worldPos;
-            swipeLineRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction.normalized);  
+            swipeLineRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction.normalized);
+
+            Transform touchEffect = FootballController.Instance.touchEffect.transform;
+            touchEffect.position = worldPos;
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -140,6 +148,7 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
             {
                 Vector3 direction = toPosition - fromPosition;
                 distance = Vector3.Distance(fromPosition, toPosition);
+                FootballController.Instance.touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
                 OnSwipeReleased(direction);
             }
         }

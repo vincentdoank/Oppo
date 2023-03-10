@@ -46,6 +46,8 @@ namespace WTI.NetCode
         private const byte SEND_RESET_MATCH_EVENT_CODE = 14;
         private const byte PART_OF_DAY_EVENT_CODE = 15;
         private const byte WEATHER_EVENT_CODE = 16;
+        private const byte BALL_POSITION_RESET_EVENT_CODE = 17;
+        private const byte CATCH_BALL_EVENT_CODE = 18;
 
         private const byte DISCONNECT_EVENT_CODE = 00;
 
@@ -81,6 +83,8 @@ namespace WTI.NetCode
             EventManager.onResetMatchStarted += SendResetMatch;
             EventManager.onPartOfDayChanged += SendPartOfDay;
             EventManager.onWeatherChanged += SendWeather;
+            EventManager.onBallPositionResetted += SendBallReset;
+            EventManager.onBallCaught += SendCatchBall;
 
             EventManager.onOtherPlayerDisconnected += SendOtherPlayerDisconnectedStat;
         }
@@ -665,6 +669,62 @@ namespace WTI.NetCode
             }
         }
 
+        private void SendBallReset(ulong senderClientId)
+        {
+            Debug.Log("SendBallReset");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(BALL_POSITION_RESET_EVENT_CODE);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
+        private void SendCatchBall(ulong senderClientId)
+        {
+            Debug.Log("SendCatchBall");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(CATCH_BALL_EVENT_CODE);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
         private void SendOtherPlayerDisconnectedStat(ulong senderClientId, ulong clientId)
         {
             NetworkController.Instance.errorMessage = "SendOtherPlayerDisconnectedStat";
@@ -681,7 +741,6 @@ namespace WTI.NetCode
                 if (IsServer)
                 {
                     customMessagingManager.SendUnnamedMessageToAll(writer);
-                    Debug.Log("SendNextRound to All");
                 }
                 else
                 {
@@ -759,6 +818,12 @@ namespace WTI.NetCode
                     break;
                 case WEATHER_EVENT_CODE:
                     OnReceivedWeatherEventMessage(clientId, reader);
+                    break;
+                case BALL_POSITION_RESET_EVENT_CODE:
+                    OnReceivedBallResetEventMessage(clientId, reader);
+                    break;
+                case CATCH_BALL_EVENT_CODE:
+                    OnReceivedCatchBallEventMessage(clientId, reader);
                     break;
                 case DISCONNECT_EVENT_CODE:
                     OnReceivedOtherPlayerDisconnectedEventMessage(clientId, reader);
@@ -983,7 +1048,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedWeatherEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnPartOfDay message");
+            Debug.Log("OnReceivedWeatherEventMessage message");
             reader.ReadValueSafe(out int weather);
             if (IsServer)
             {
@@ -992,6 +1057,25 @@ namespace WTI.NetCode
             OnWeatherChanged(weather);
         }
 
+        protected void OnReceivedBallResetEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedBallResetEventMessage message");
+            if (IsServer)
+            {
+                SendBallReset(client);
+            }
+            OnBallResetted();
+        }
+
+        protected void OnReceivedCatchBallEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedCatchBallEventMessage message");
+            if (IsServer)
+            {
+                SendCatchBall(client);
+            }
+            OnBallCaught();
+        }
         protected void OnReceivedOtherPlayerDisconnectedEventMessage(ulong clientid, FastBufferReader reader)
         {
             Debug.Log("OnReceivedOtherPlayerDisconnectedEventMessage");
@@ -1107,6 +1191,15 @@ namespace WTI.NetCode
             FootballController.Instance.OnWeatherChanged(weather);
         }
 
+        private void OnBallResetted()
+        {
+            FootballController.Instance.OnBallResetted();
+        }
+
+        private void OnBallCaught()
+        {
+            FootballController.Instance.OnBallCaught();
+        }
         private void OnOtherPlayerDisconnected(ulong clientId)
         {
             FootballController.Instance.OnDisconnected(clientId);

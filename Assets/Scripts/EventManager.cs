@@ -37,6 +37,8 @@ public class EventManager : MonoBehaviour
     public static Action<ulong> onResetMatchStarted;
     public static Action<ulong, int> onPartOfDayChanged;
     public static Action<ulong, int> onWeatherChanged;
+    public static Action<ulong> onBallPositionResetted;
+    public static Action<ulong> onBallCaught;
 
     public static Action<ulong, ulong> onOtherPlayerDisconnected;
 

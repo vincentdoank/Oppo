@@ -52,7 +52,6 @@ public class TimeController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("upd isPaused : " + isPaused);
         if (!isPaused)
         {
             if (elapsedTime > 0)
