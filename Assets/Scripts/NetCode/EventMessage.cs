@@ -163,7 +163,7 @@ namespace WTI.NetCode
             }
         }
 
-        private void SendPhoneDrawLineEvent(ulong senderClientId, int index, List<Vector3> points)
+        private void SendPhoneDrawLineEvent(ulong senderClientId, int index, Vector3[] points)
         {
             var writer = new FastBufferWriter(256000000, Allocator.Temp);
             var customMessagingManager = NetworkManager.CustomMessagingManager;

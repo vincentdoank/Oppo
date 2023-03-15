@@ -107,6 +107,7 @@ public class SkyController : MonoBehaviour
 
     public void OnWeatherChanged(int weather)
     {
+        Debug.LogWarning("Change weather : " + weather);
         weatherType = (WeatherType)weather;
         switch ((WeatherType)weather)
         {
@@ -127,16 +128,16 @@ public class SkyController : MonoBehaviour
         switch (weather)
         {
             case WeatherType.sunny:
-                SwitchSunnyWeather(false);
+                SwitchSunnyWeather(true);
                 break;
             case WeatherType.cloudy:
-                SwitchCloudyWeather(false);
+                SwitchCloudyWeather(true);
                 break;
             case WeatherType.rainy:
-                SwitchRainyWeather(false);
+                SwitchRainyWeather(true);
                 break;
             case WeatherType.snowy:
-                SwitchSnowyWeather(false);
+                SwitchSnowyWeather(true);
                 break;
         }
     }
@@ -162,6 +163,7 @@ public class SkyController : MonoBehaviour
             SwitchSnowyWeather(isSync);
         }
 
+        Debug.LogWarning("SwitchMorningSkybox " + isSync);
         if (isSync)
         {
             EventManager.onPartOfDayChanged?.Invoke(GameManager.Instance.GetClientId(), (int)timeType);
@@ -189,6 +191,7 @@ public class SkyController : MonoBehaviour
             SwitchSnowyWeather(isSync);
         }
 
+        Debug.LogWarning("SwitchDaySkybox " + isSync);
         if (isSync)
         {
             EventManager.onPartOfDayChanged?.Invoke(GameManager.Instance.GetClientId(), (int)timeType);
@@ -216,6 +219,7 @@ public class SkyController : MonoBehaviour
             SwitchSnowyWeather(isSync);
         }
 
+        Debug.LogWarning("SwitchNightSkybox " + isSync);
         if (isSync)
         {
             EventManager.onPartOfDayChanged?.Invoke(GameManager.Instance.GetClientId(), (int)timeType);
@@ -237,6 +241,7 @@ public class SkyController : MonoBehaviour
             RenderSettings.skybox = nightSkyboxMaterial;
         }
 
+        Debug.LogWarning("SwitchSunnyWeather " + isSync);
         if (isSync)
         {
             EventManager.onWeatherChanged?.Invoke(GameManager.Instance.GetClientId(), (int)weatherType);
@@ -258,6 +263,7 @@ public class SkyController : MonoBehaviour
             RenderSettings.skybox = cloudyNightSkyboxMaterial;
         }
 
+        Debug.LogWarning("SwitchCloudyWeather " + isSync);
         if (isSync)
         {
             EventManager.onWeatherChanged?.Invoke(GameManager.Instance.GetClientId(), (int)weatherType);
@@ -279,6 +285,7 @@ public class SkyController : MonoBehaviour
             RenderSettings.skybox = cloudyNightSkyboxMaterial;
         }
 
+        Debug.LogWarning("SwitchRainyWeather " + isSync);
         if (isSync)
         {
             EventManager.onWeatherChanged?.Invoke(GameManager.Instance.GetClientId(), (int)weatherType);
@@ -300,6 +307,7 @@ public class SkyController : MonoBehaviour
             RenderSettings.skybox = snowyNightSkyboxMaterial;
         }
 
+        Debug.LogWarning("SwitchSnowyWeather " + isSync);
         if (isSync)
         {
             EventManager.onWeatherChanged?.Invoke(GameManager.Instance.GetClientId(), (int)weatherType);

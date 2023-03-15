@@ -25,6 +25,11 @@ namespace WTI.NetCode
             return NetworkManager.Singleton.LocalClientId;
         }
 
+        public int GetClientCount()
+        {
+            return NetworkManager.Singleton.ConnectedClients.Count;
+        }
+
         private IEnumerator Start()
         {
             yield return null;
@@ -179,6 +184,7 @@ namespace WTI.NetCode
         {
             resp.Approved = (NetworkManager.Singleton.ConnectedClientsIds.Count < GameManager.Instance.maxUser + 1);
             statusText.text = "response : " + resp.Approved;
+            Debug.LogWarning("Check Approval");
         }
 
         public void OnServerStarted()
@@ -188,11 +194,13 @@ namespace WTI.NetCode
             //GameManager.Instance.ShowExitRoomButton();
             statusText.text = "started";
             //FootballController.Instance.ApplyRole();
+
+            FootballController.Instance.SendPlayerData();
         }
 
         public void OnConnected(ulong clientId)
         {
-            Debug.LogWarning("OnConnected : " + clientId + "  " + NetworkManager.Singleton.ConnectedClients.Count);
+            //Debug.LogWarning("OnConnected : " + clientId + "  " + NetworkManager.Singleton.ConnectedClients.Count);
             if (clientId == NetworkManager.Singleton.LocalClientId)
             {
                 GameManager.Instance.HideReconnectButton();

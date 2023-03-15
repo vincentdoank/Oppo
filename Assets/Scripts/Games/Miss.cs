@@ -16,6 +16,10 @@ public class Miss : MonoBehaviour
     {
         if (!FootballController.Instance.CheckCurrentMatch())
         {
+            if (GameManager.Instance.IsServer)
+            {
+                FootballController.Instance.PlayMissAnimation();
+            }
             FootballController.Instance.matchDataList.Add(new MatchData { match = FootballController.Instance.scoreController.GetRound(), winnerId = (int)ScoreController.Player.player2 });
             FootballController.Instance.scoreController.AddScore(ScoreController.Player.player2);
             FootballPlayerData data = new FootballPlayerData
@@ -24,7 +28,7 @@ public class Miss : MonoBehaviour
                 isGoalKeeperSelected = FootballController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
                 p1Score = FootballController.Instance.scoreController.GetPlayer1Score(),
                 p2Score = FootballController.Instance.scoreController.GetPlayer2Score(),
-                matchDataList = FootballController.Instance.matchDataList
+                matchDataList = FootballController.Instance.matchDataList  
             };
             EventManager.onFootballDataSent?.Invoke(data);
         }

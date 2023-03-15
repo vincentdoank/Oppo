@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using DG.Tweening;
 
 public class GoalKeeper : Player
 {
@@ -12,6 +13,8 @@ public class GoalKeeper : Player
     public Transform hands;
     public Transform leftHand;
     public Transform rightHand;
+    public Transform leftHandTarget;
+    public Transform rightHandTarget;
     public Vector3 leftHandOffset;
     public Vector3 rightHandOffset;
     public float minX, maxX, minY, maxY;
@@ -19,7 +22,10 @@ public class GoalKeeper : Player
     public float maxAngle = 60f;
     public float smoothness = 5f;
     public float handSpeed = 2f;
+    public float catchDuration = 0.5f;
     public Rig rig;
+
+    public bool canCatch = true;
 
     private Vector3 calibrationOffset;
 
@@ -28,6 +34,8 @@ public class GoalKeeper : Player
         Debug.LogWarning("Start");
         animator = GetComponent<Animator>();
         EventManager.onCalibrate += Calibrate;
+        canCatch = true;
+        rig.weight = 0f;
     }
 
     private void OnDestroy()
@@ -54,13 +62,13 @@ public class GoalKeeper : Player
 
             animator.SetFloat("Acceleration", acceleration.x);
         }
-        if (playerType == PlayerType.AI)
-        {
-            if (acceleration.x < -0.3f || acceleration.x > 0.3f)
-            {
-                ResetCheckIdle();
-            }
-        }
+        //if (playerType == PlayerType.AI)
+        //{
+        //    if (acceleration.x > -0.1f && acceleration.x < 0.1f)
+        //    {
+        //        ResetCheckIdle();
+        //    }
+        //}
     }
 
     private void LateUpdate()
@@ -118,7 +126,7 @@ public class GoalKeeper : Player
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
         {
             EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, target.position);
-            Debug.LogWarning("Send GK pos");
+            //Debug.LogWarning("Send GK pos");
         }
         //float angle = acceleration.x * 60f * 2f;
         //if (angle > maxAngle) angle = maxAngle;
@@ -157,12 +165,22 @@ public class GoalKeeper : Player
 
     protected override void DoAction()
     {
+        base.DoAction();
         Debug.LogWarning("isPauseAI");
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             Debug.LogWarning("goalkeeper AI");
             Vector3 targetPos = FootballController.Instance.ball.transform.position;
             Vector3 pos = goalKeeper.position;
+
+            if (targetPos.x > FootballController.Instance.goal.position.x + 5)
+            {
+                targetPos.x = FootballController.Instance.goal.position.x + 5;
+            }
+            else if (targetPos.x < FootballController.Instance.goal.position.x - 5)
+            {
+                targetPos.x = FootballController.Instance.goal.position.x - 5;
+            }
 
             if (targetPos.x > goalKeeper.position.x + 0.15f)
             {
@@ -178,14 +196,16 @@ public class GoalKeeper : Player
             }
 
             targetPos.y = pos.y;
+            targetPos.z = pos.z;
             goalKeeper.position = Vector3.Lerp(goalKeeper.position, targetPos, Time.deltaTime * 5f);
+            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, goalKeeper.position);
         }
     }
 
     protected override bool CheckIdle()
     {
         Vector3 acc = acceleration;
-        if (Mathf.Abs(acc.x - accelerometerTolerance) > 0 || Mathf.Abs(acc.y - accelerometerTolerance) > 0 || Mathf.Abs(acc.z - accelerometerTolerance) > 0)
+        if (Mathf.Abs(acc.x) - accelerometerTolerance > 0)
         {
             ResetCheckIdle();
             return false;
@@ -202,34 +222,50 @@ public class GoalKeeper : Player
     public override void PlayLoseAnimation()
     {
         //rig.weight = 0f;
-        Release();
         base.PlayLoseAnimation();
     }
 
     public override void PlayWinAnimation()
     {
         //rig.weight = 0f;
-        Release();
         base.PlayWinAnimation();
     }
 
     public void Catch()
     {
+        if (!canCatch)
+        {
+            return;
+        }
+        canCatch = false;
+        Debug.Log("ball catch");
         rig.weight = 1f;
-        FootballController.Instance.ball.Stop();
-        leftHand.localPosition = leftHand.InverseTransformPoint(FootballController.Instance.ball.transform.position) + leftHandOffset;
-        rightHand.localPosition = rightHand.InverseTransformPoint(FootballController.Instance.ball.transform.position) + rightHandOffset;
+        leftHandTarget.position = FootballController.Instance.ball.transform.position - leftHandTarget.InverseTransformPoint(leftHandOffset);
+        rightHandTarget.position = FootballController.Instance.ball.transform.position - rightHandTarget.InverseTransformPoint(rightHandOffset);
+        //Vector3 centerBall = (leftHand.position + rightHand.position) / 2;
+        FootballController.Instance.ball.Catch(leftHand, rightHand);
         if (GameManager.Instance.IsServer)
         {
+            FootballController.Instance.PlaySaveAnimation();
             EventManager.onBallCaught?.Invoke(GameManager.Instance.GetClientId());
         }
+        StartCoroutine(WaitForRelease());
+    }
+
+    private IEnumerator WaitForRelease()
+    {
+        yield return new WaitForSeconds(catchDuration);
+        Release();
     }
 
     public void Release()
     {
-        leftHand.localPosition = leftHandOffset;
-        rightHand.localPosition = rightHandOffset;
-        rig.weight = 0f;
+        Debug.Log("release hand");
+        leftHandTarget.localPosition = leftHandOffset;
+        rightHandTarget.localPosition = rightHandOffset;
+        Tweener tween = DOTween.To(() => rig.weight, (weight) => { rig.weight = weight; }, 0f, 0.1f);
+        tween.Play();
+        FootballController.Instance.ball.Release();
     }
 
     //protected override bool CheckIdle()

@@ -96,6 +96,7 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
                 topY = Mathf.Infinity;
             }
 
+            
             Vector3 mousePos = Input.mousePosition;
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
             worldPos.z = 0;
@@ -134,6 +135,11 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
                     }
                 }
             }
+           
+            if (swipeLineRenderer.positionCount >= 20)
+            {
+                RemoveOldLine();
+            }
 
             swipeLineRenderer.transform.position = worldPos;
             swipeLineRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction.normalized);
@@ -152,6 +158,18 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
                 OnSwipeReleased(direction);
             }
         }
+    }
+
+    private void RemoveOldLine()
+    {
+        List<Vector3> positionList = new List<Vector3>();
+        for (int i = 0; i < swipeLineRenderer.positionCount; i++)
+        {
+            positionList.Add(swipeLineRenderer.GetPosition(i));
+        }
+        positionList.RemoveAt(0);
+        swipeLineRenderer.positionCount -= 1;
+        swipeLineRenderer.SetPositions(positionList.ToArray());
     }
 
     public void ClearLine()

@@ -34,10 +34,10 @@ namespace WTI.PUN
             }
         }
 
-        public void SendLineEvent(int index, List<Vector3> vectorPoints)
+        public void SendLineEvent(int index, Vector3[] vectorPoints)
         {
-            object[] points = new object[vectorPoints.Count];
-            for (int i = 0; i < vectorPoints.Count; i++)
+            object[] points = new object[vectorPoints.Length];
+            for (int i = 0; i < vectorPoints.Length; i++)
             {
                 points[i] = vectorPoints[i];
             }

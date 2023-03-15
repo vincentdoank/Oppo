@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
     private bool isThinking = false;
     private float elapsedThinkingTime = 0f;
 
-    private float checkIdleTime = 30f;
-    protected float accelerometerTolerance = 0.1f;
+    private float checkIdleTime = 20f;
+    protected float accelerometerTolerance = 0.05f;
     protected bool pauseAi = false;
     private float elapsedCheckIdleTime = 0f;
 
@@ -33,6 +33,9 @@ public class Player : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        Debug.LogWarning("playerType : " + playerType.ToString());
+
         if (playerType == PlayerType.AI)
         {
             if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
@@ -76,8 +79,6 @@ public class Player : MonoBehaviour
 
     protected virtual bool CheckIdle()
     {
-        if(FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
-        Debug.LogWarning("CheckAI : " + playerType);
         if (Input.GetMouseButtonDown(0))
         {
             ResetCheckIdle();

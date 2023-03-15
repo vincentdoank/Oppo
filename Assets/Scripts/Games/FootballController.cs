@@ -36,7 +36,7 @@ public class FootballController : MonoBehaviour
     public SwipeController swipeController;
     public Image goalImage;
     public Image missImage;
-    public Image safeImage;
+    public Image saveImage;
 
     public Weather weather;
     public Locator locator;
@@ -56,11 +56,12 @@ public class FootballController : MonoBehaviour
     }
 
     public PlayerType playerType = PlayerType.None;
+    public bool isBallSaved = false;
+    public bool isStarted = false;
 
     private float shootTimer = 4f;
     private float elapsedTime;
 
-    public bool isStarted = false;
 
     public Dictionary<ulong, int> clientsRoleDict = new Dictionary<ulong, int>();
 
@@ -103,15 +104,22 @@ public class FootballController : MonoBehaviour
 
     public void ApplyRole()
     {
-        if (Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            return;
-        }
+        //if (Application.platform == RuntimePlatform.WindowsPlayer)
+        //{
+        //    return;
+        //}
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
-        //OnGoalKeeperSelected();
-        OnStrikerSelected();
+        OnGoalKeeperSelected();
+        //OnStrikerSelected();
 #endif
+
+        Debug.Log("player role : " + playerType.ToString());
+
+        if (playerType == PlayerType.Striker)
+        {
+            StartCoroutine(GetWeatherData());
+        }
     }
 
     private IEnumerator GetWeatherData()
@@ -121,6 +129,7 @@ public class FootballController : MonoBehaviour
         Weather.WeatherType weatherType = Weather.WeatherType.Clear;
         yield return locator.GetLatitudeLongitude((latitude, longitude) => { lati = latitude; longi = longitude; });
         yield return weather.RequestWeather(lati, longi, (weather) => { weatherType = weather; });
+        Debug.LogWarning("Get Weather data : " + weatherType);
         skyController.CheckCurrentTimeWeather(weatherType);
     }
 
@@ -133,7 +142,7 @@ public class FootballController : MonoBehaviour
     public void StartMatch()
     {
         isStarted = true;
-        if (NetworkController.Instance.GetClientId() == 1)
+        if (playerType == PlayerType.Striker)
         {
             StartCoroutine(GetWeatherData());
         }
@@ -152,16 +161,21 @@ public class FootballController : MonoBehaviour
     public void PlayGoalAnimation()
     {
         goalImage.gameObject.SetActive(true);
+        CrowdManager.Instance.CrowdClap();
     }
 
     public void PlayMissAnimation()
     {
-        missImage.gameObject.SetActive(true);
+        if (!isBallSaved)
+        {
+            missImage.gameObject.SetActive(true);
+        }
     }
 
-    public void PlaySafeAnimation()
+    public void PlaySaveAnimation()
     {
-        safeImage.gameObject.SetActive(true);
+        isBallSaved = true;
+        saveImage.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -174,6 +188,7 @@ public class FootballController : MonoBehaviour
                 Debug.Log("check current match : " + CheckCurrentMatch());
                 if (!CheckCurrentMatch())
                 {
+                    PlayMissAnimation();
                     scoreController.AddScore(ScoreController.Player.player2);
                     matchDataList.Add(new MatchData { match = scoreController.GetRound(), winnerId = (int)ScoreController.Player.player2 });
                     FootballPlayerData data = new FootballPlayerData
@@ -187,10 +202,8 @@ public class FootballController : MonoBehaviour
                     EventManager.onFootballDataSent?.Invoke(data);
                     //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), scoreController.GetPlayer1Score(), scoreController.GetPlayer2Score());
                 }
-                Debug.Log("Score : " + scoreController.GetPlayer1Score() + " " + scoreController.GetPlayer2Score());
                 if (scoreController.GetPlayer1Score() + scoreController.GetPlayer2Score() < 5 && CheckCurrentMatch())
                 {
-                    Debug.Log("trying to go to next round");
                     NextRound();
                 }
                 ball.isShooting = false;
@@ -211,7 +224,6 @@ public class FootballController : MonoBehaviour
     {
         OnStrikerSelected(GetClientIdByRole(PlayerType.Striker), isStrikerSelected);
         OnGoalKeeperSelected(GetClientIdByRole(PlayerType.GoalKeeper), isGoalKeeperSelected);
-        //scoreController.time.SetTime();
     }
 
     public void CheckState()
@@ -252,8 +264,6 @@ public class FootballController : MonoBehaviour
 
     public void Shoot()
     {
-        //swipeController.CanSwipe(false);
-        //scoreController.time.Pause(true);
         striker.PlayShootAnimation();
     }
 
@@ -282,11 +292,12 @@ public class FootballController : MonoBehaviour
         Debug.Log("NextRound");
         NetworkController.Instance.errorMessage = "NextRound";
         elapsedTime = 0;
+        isBallSaved = false;
         PlayTransitionAnim();
         scoreController.NextRound();
         if (playerType == PlayerType.Striker)
         {
-            goalKeeper.Release();
+            //goalKeeper.Release();
             ball.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
@@ -300,7 +311,7 @@ public class FootballController : MonoBehaviour
             EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
             EventManager.onNextRoundStarted?.Invoke(GameManager.Instance.GetClientId());
         }
-
+        CrowdManager.Instance.CrowdRandom();
     }
 
     public void PlayWinAnimation()
@@ -322,22 +333,24 @@ public class FootballController : MonoBehaviour
         striker.PlayIdleAnimation();
         goalKeeper.PlayIdleAnimation();
         Debug.Log("Reset Match");
-        if (NetworkController.Instance.GetClientId() == 1)
+        if (playerType == PlayerType.Striker)
         {
             StartCoroutine(GetWeatherData());
         }
         elapsedTime = 0;
+        isBallSaved = false;
         PlayTransitionAnim();
         matchDataList.Clear();
         scoreController.ResetMatch();
         ball.isShooting = false;
-        goalKeeper.Release();
         if (playerType == PlayerType.Striker)
         {
+            //goalKeeper.Release();
             ball.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
+        CrowdManager.Instance.CrowdRandom();
     }
 
     public IEnumerator WaitForResetMatch()
@@ -346,21 +359,15 @@ public class FootballController : MonoBehaviour
         PlayWinAnimation();
         swipeController.CanSwipe(false);
         elapsedTime = 0;
+        isBallSaved = false;
         ball.isShooting = false;
         yield return new WaitForSeconds(3f);
-        //PlayTransitionAnim();
         striker.PlayIdleAnimation();
         goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
         scoreController.ResetMatch();
-        goalKeeper.Release();
         ball.Reset();
-        //if (playerType == PlayerType.Striker)
-        //{
-        //    swipeController.CanSwipe(true);
-        //    swipeController.ClearLine();
-        //}
-
+        CrowdManager.Instance.CrowdRandom();
         scoreController.time.SetTime(10, () =>
         {
             EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
@@ -384,7 +391,6 @@ public class FootballController : MonoBehaviour
         }
         else
         {
-
             return false;
         }
     }
@@ -455,15 +461,6 @@ public class FootballController : MonoBehaviour
 
             clientsRoleDict.Remove(clientId);
         }
-
-        //if (playerType == PlayerType.Striker)
-        //{
-        //    EventManager.onStrikerSelected?.Invoke(false);
-        //}
-        //else
-        //{
-        //    EventManager.onGoalKeeperSelected?.Invoke(false);
-        //}
     }
 
     public void SendPlayerData()
@@ -478,11 +475,6 @@ public class FootballController : MonoBehaviour
             matchDataList = new List<MatchData>()
         });
     }
-
-    //public void SendResetMatch(ulong clientId)
-    //{
-    //    EventManager.onResetMatchStarted?.Invoke(clientId);
-    //}
 
     public void UpdatePlayerData(FootballPlayerData data)
     {

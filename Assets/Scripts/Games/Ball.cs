@@ -13,6 +13,9 @@ public class Ball : MonoBehaviour
     public bool isShooting;
     public ParticleSystem puffEffect;
 
+    private Transform leftHand = null;
+    private Transform rightHand = null;
+
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -41,17 +44,38 @@ public class Ball : MonoBehaviour
         transform.position = DefPos;
     }
 
-    public void Stop()
+    public void Catch(Transform leftHand, Transform rightHand)
     {
-        stopUpdate = true;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = Vector3.zero;
-        rigidBody.isKinematic = true;
+        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        {
+            stopUpdate = true;
+            rigidBody.velocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.isKinematic = true;
+            this.leftHand = leftHand;
+            this.rightHand = rightHand;
+
+            //transform.position = catchPoint;
+        }
+    }
+
+    public void Release()
+    {
+        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        {
+            rigidBody.isKinematic = false;
+            stopUpdate = false;
+            leftHand = null;
+            rightHand = null;
+            rigidBody.AddForce(FootballController.Instance.goalKeeper.transform.forward * 4f, ForceMode.Impulse);
+        }
     }
 
     public void Shoot(Vector3 shootPosition)
     {
+        Debug.LogWarning("Shoot : " + shootPosition);
         //Reset();
+        FootballController.Instance.goalKeeper.canCatch = true;
         stopUpdate = false;
         rigidBody.isKinematic = false;
         isShooting = true;
@@ -84,6 +108,7 @@ public class Ball : MonoBehaviour
     {
         //Reset();
         isShooting = true;
+        FootballController.Instance.goalKeeper.canCatch = true;
         FootballController.Instance.scoreController.time.Pause(true);
         Vector3 upForce = Vector3.up * 5f;
         rigidBody.AddTorque(Vector3.forward * 5f);
@@ -92,21 +117,23 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rigidBody.velocity = Vector3.zero;
-            rigidBody.angularVelocity = Vector3.zero;
-            transform.position = DefPos;
-        }
-
         if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        //if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
-            rigidBody.isKinematic = false;
+            //rigidBody.isKinematic = false;
             EventManager.onFootballUpdated?.Invoke(GameManager.Instance.GetClientId(), transform.position, transform.localEulerAngles);
         }
         else
         {
             rigidBody.isKinematic = true;
+        }
+
+        if (rigidBody.isKinematic && leftHand != null && rightHand != null)
+        {
+            Vector3 centerPoint = (leftHand.position + rightHand.position) / 2;
+            centerPoint.z = FootballController.Instance.goalKeeper.transform.position.z + (FootballController.Instance.goalKeeper.transform.forward * 1.2f).z;
+            //transform.position = centerPoint;
+            transform.position = Vector3.Lerp(transform.position, centerPoint, Time.deltaTime * 10f);
         }
     }
 

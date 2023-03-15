@@ -12,12 +12,14 @@ public class LineBrush : SimplePooling
     private int frame = 1;
     private float elapsedFrameTime;
 
-    private List<Vector3> positionList = new List<Vector3>();
+    private List<Vector3> prePositionList = new List<Vector3>();
+    private Vector3[] positionList;
 
     private List<LineRenderer> lineList = new List<LineRenderer>();
 
     public Vector3 screenOffset;
     public float width = 1;
+    public float lineSegmentSize = 0.25f;
     public Transform lineParent;
 
     protected override void Start()
@@ -45,6 +47,30 @@ public class LineBrush : SimplePooling
         lineRenderer.endWidth = width;
         lineList.Add(lineRenderer);
         return lineRenderer;
+    }
+
+    private List<Vector3> GetLinePositions(LineRenderer line)
+    {
+        List<Vector3> positionList = new List<Vector3>();
+        for (int i = 0; i < line.positionCount; i++)
+        {
+            positionList.Add(line.GetPosition(i));
+        }
+        return positionList;
+    }
+
+    private Vector3[] Smoothing()
+    {
+        LineRenderer line = lineList[lineList.Count - 1];
+        Vector3[] smoothedPoints = LineSmoother.SmoothLine(prePositionList.ToArray(), lineSegmentSize);
+
+        //set line settings
+        line.positionCount = smoothedPoints.Length;
+        line.SetPositions(smoothedPoints);
+        line.startWidth = width;
+        line.endWidth = width;
+        Debug.LogWarning("line position count : " + line.positionCount);
+        return smoothedPoints;
     }
 
     private void OnDestroy()
@@ -75,12 +101,15 @@ public class LineBrush : SimplePooling
                 //ClearLine();
                 Vector3 mousePos = Input.mousePosition;
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+
                 LineRenderer lineRenderer = SpawnLine(worldPos);
                 worldPos.z = 0;
                 lineRenderer.positionCount = 1;
                 lineRenderer.SetPosition(0, worldPos);
 
-                positionList.Add(worldPos);
+                prePositionList.Add(worldPos);
+                //positionList.Add(worldPos);
+
                 ParticleSystem touchEffect = FootballController.Instance.touchEffect;
                 touchEffect.transform.position = worldPos;
                 touchEffect.Play();
@@ -91,18 +120,22 @@ public class LineBrush : SimplePooling
             {
                 if (Input.GetMouseButton(0))
                 {
-                    if (positionList.Count < 5000)
+                    //if (positionList.Length < 5000)
                     {
                         Vector3 mousePos = Input.mousePosition;
                         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-                        worldPos.x = float.Parse(worldPos.x.ToString("0.000"));
-                        worldPos.y = float.Parse(worldPos.y.ToString("0.000"));
                         worldPos.z = 0;
-                        Debug.Log("linelist count : " + lineList.Count, this);
-                        lineList[lineList.Count - 1].positionCount += 1;
-                        lineList[lineList.Count - 1].SetPosition(lineList[lineList.Count - 1].positionCount - 1, worldPos);
 
-                        positionList.Add(worldPos);
+                        Debug.Log("linelist count : " + lineList.Count, this);
+
+                        prePositionList.Add(worldPos);
+
+                        positionList = Smoothing();
+
+                        //lineList[lineList.Count - 1].positionCount += 1;
+                        //lineList[lineList.Count - 1].SetPosition(lineList[lineList.Count - 1].positionCount - 1, worldPos);
+
+                        //positionList.Add(worldPos);
                         Transform touchEffect = FootballController.Instance.touchEffect.transform;
                         touchEffect.position = worldPos;
                     }
@@ -118,7 +151,8 @@ public class LineBrush : SimplePooling
             {
                 //Reflect();
                 isTouchReleased = true;
-                positionList.Clear();
+                positionList = null;
+                prePositionList.Clear();
                 FootballController.Instance.touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             }
 
@@ -135,7 +169,7 @@ public class LineBrush : SimplePooling
         LineRenderer line = SpawnLine(Vector3.zero);
         line.startWidth = width / 2f;
         line.endWidth = width / 2f;
-        for (int i = 0; i < positionList.Count; i++)
+        for (int i = 0; i < positionList.Length; i++)
         {
             line.positionCount += 1;
             line.SetPosition(line.positionCount - 1, positionList[i] / 2 + offset);
@@ -162,7 +196,7 @@ public class LineBrush : SimplePooling
                 yield return null;
                 if (!GameManager.Instance.IsServer)
                 {
-                    if (GameManager.Instance.controlType == GameManager.ControlType.SHAKEDRAW && positionList.Count > 0)
+                    if (GameManager.Instance.controlType == GameManager.ControlType.SHAKEDRAW && positionList != null)
                     {
                         EventManager.onDrawingLine?.Invoke(GameManager.Instance.GetClientId(), lineList.Count - 1, positionList);
                     }
@@ -194,10 +228,15 @@ public class LineBrush : SimplePooling
             SpawnLine(points[0] + screenOffset);
         }
         elapsedTimeTouchRelease = 0f;
-        for (int i = 0; i < points.Count; i++)
+        if (lineList.Count > index)
         {
-            lineList[index].positionCount = points.Count;
-            lineList[index].SetPosition(i, points[i] / 2 + screenOffset);
+            for (int i = 0; i < points.Count; i++)
+            {
+                lineList[index].startWidth = width / 2;
+                lineList[index].endWidth = width / 2;
+                lineList[index].positionCount = points.Count;
+                lineList[index].SetPosition(i, points[i] / 2 + screenOffset);
+            }
         }
     }
 }
