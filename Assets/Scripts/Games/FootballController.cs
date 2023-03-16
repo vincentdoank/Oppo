@@ -110,7 +110,7 @@ public class FootballController : MonoBehaviour
         //}
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
-        OnGoalKeeperSelected();
+        //OnGoalKeeperSelected();
         //OnStrikerSelected();
 #endif
 

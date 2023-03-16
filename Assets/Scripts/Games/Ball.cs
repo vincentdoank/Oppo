@@ -131,6 +131,10 @@ public class Ball : MonoBehaviour
         if (rigidBody.isKinematic && leftHand != null && rightHand != null)
         {
             Vector3 centerPoint = (leftHand.position + rightHand.position) / 2;
+            if (centerPoint.y > FootballController.Instance.goalKeeper.transform.position.y + 2.2f)
+            {
+                centerPoint.y = FootballController.Instance.goalKeeper.transform.position.y + 2.2f;
+            }
             centerPoint.z = FootballController.Instance.goalKeeper.transform.position.z + (FootballController.Instance.goalKeeper.transform.forward * 1.2f).z;
             //transform.position = centerPoint;
             transform.position = Vector3.Lerp(transform.position, centerPoint, Time.deltaTime * 10f);

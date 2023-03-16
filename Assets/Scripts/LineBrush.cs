@@ -33,7 +33,7 @@ public class LineBrush : SimplePooling
         elapsedFrameTime = 0f;
 
         EventManager.onClearLine += ClearLine;
-        //GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
+        GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
     }
 
     private LineRenderer SpawnLine(Vector3 position)

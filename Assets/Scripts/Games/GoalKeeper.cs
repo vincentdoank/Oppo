@@ -141,11 +141,11 @@ public class GoalKeeper : Player
     public void UpdatePosition(Vector3 position, Vector3 handPosition)
     {
         //goalKeeper.position = position;
-        if (position.x > goalKeeper.position.x + 0.15f)
+        if (position.x > goalKeeper.position.x + 0.08f)
         {
             animator.SetFloat("Acceleration", 0.2f);
         }
-        else if (position.x < goalKeeper.position.x - 0.15f)
+        else if (position.x < goalKeeper.position.x - 0.08f)
         {
             animator.SetFloat("Acceleration", -0.2f);
         }
@@ -182,11 +182,11 @@ public class GoalKeeper : Player
                 targetPos.x = FootballController.Instance.goal.position.x - 5;
             }
 
-            if (targetPos.x > goalKeeper.position.x + 0.15f)
+            if (targetPos.x > goalKeeper.position.x + 0.08f)
             {
                 animator.SetFloat("Acceleration", 0.2f);
             }
-            else if (targetPos.x < goalKeeper.position.x - 0.15f)
+            else if (targetPos.x < goalKeeper.position.x - 0.08f)
             {
                 animator.SetFloat("Acceleration", -0.2f);
             }
@@ -240,8 +240,23 @@ public class GoalKeeper : Player
         canCatch = false;
         Debug.Log("ball catch");
         rig.weight = 1f;
-        leftHandTarget.position = FootballController.Instance.ball.transform.position - leftHandTarget.InverseTransformPoint(leftHandOffset);
-        rightHandTarget.position = FootballController.Instance.ball.transform.position - rightHandTarget.InverseTransformPoint(rightHandOffset);
+        Vector3 ballPosition = FootballController.Instance.ball.transform.position;
+        Vector3 leftHandPos = ballPosition - leftHandTarget.InverseTransformPoint(leftHandOffset);
+        Vector3 rightHandPos = ballPosition - rightHandTarget.InverseTransformPoint(rightHandOffset);
+
+        leftHandPos.z = goalKeeper.transform.position.z + (goalKeeper.transform.forward * 1.2f).z;
+        rightHandPos.z = goalKeeper.transform.position.z + (goalKeeper.transform.forward * 1.2f).z;
+
+        if (leftHandPos.y > goalKeeper.transform.position.y + 2.2f)
+        {
+            leftHandPos.y = goalKeeper.transform.position.y + 2.2f;
+        }
+        if (rightHandPos.y > goalKeeper.transform.position.y + 2.2f)
+        {
+            rightHandPos.y = goalKeeper.transform.position.y + 2.2f;
+        }
+        leftHandTarget.position = leftHandPos;
+        rightHandTarget.position = rightHandPos;
         //Vector3 centerBall = (leftHand.position + rightHand.position) / 2;
         FootballController.Instance.ball.Catch(leftHand, rightHand);
         if (GameManager.Instance.IsServer)
