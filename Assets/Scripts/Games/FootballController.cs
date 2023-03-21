@@ -28,6 +28,7 @@ public class FootballController : MonoBehaviour
 
     public Camera strikerCamera;
     public Camera goalKeeperCamera;
+    public Camera screenCamera;
 
     public GoalKeeper goalKeeper;
     public Striker striker;
@@ -104,22 +105,31 @@ public class FootballController : MonoBehaviour
 
     public void ApplyRole()
     {
-        //if (Application.platform == RuntimePlatform.WindowsPlayer)
-        //{
-        //    return;
-        //}
+        if (Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            screenCamera.gameObject.SetActive(true);
+            return;
+        }
+
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
         //OnGoalKeeperSelected();
-        //OnStrikerSelected();
+        OnStrikerSelected();
+        //OnDrawLineSelected();
+#else
+        screenCamera.gameObject.SetActive(true);
 #endif
-
         Debug.Log("player role : " + playerType.ToString());
 
-        if (playerType == PlayerType.Striker)
-        {
-            StartCoroutine(GetWeatherData());
-        }
+        CheckWeather();
+    }
+
+    private void CheckWeather()
+    {
+        //if (playerType == PlayerType.Striker)
+        //{
+        //    StartCoroutine(GetWeatherData());
+        //}
     }
 
     private IEnumerator GetWeatherData()
@@ -142,10 +152,7 @@ public class FootballController : MonoBehaviour
     public void StartMatch()
     {
         isStarted = true;
-        if (playerType == PlayerType.Striker)
-        {
-            StartCoroutine(GetWeatherData());
-        }
+        CheckWeather();
         if (GameManager.Instance.IsServer)
         {
             Debug.Log("Start Match");
@@ -185,7 +192,7 @@ public class FootballController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= shootTimer)
             {
-                Debug.Log("check current match : " + CheckCurrentMatch());
+                //Debug.Log("check current match : " + CheckCurrentMatch());
                 if (!CheckCurrentMatch())
                 {
                     PlayMissAnimation();
@@ -239,6 +246,7 @@ public class FootballController : MonoBehaviour
         playerType = PlayerType.Striker;
         strikerCamera.gameObject.SetActive(true);
         goalKeeperCamera.gameObject.SetActive(false);
+        screenCamera.gameObject.SetActive(false);
 
         EventManager.onStrikerSelected?.Invoke(GameManager.Instance.GetClientId(), true);
     }
@@ -248,8 +256,17 @@ public class FootballController : MonoBehaviour
         playerType = PlayerType.GoalKeeper;
         strikerCamera.gameObject.SetActive(false);
         goalKeeperCamera.gameObject.SetActive(true);
+        screenCamera.gameObject.SetActive(false);
 
         EventManager.onGoalKeeperSelected?.Invoke(GameManager.Instance.GetClientId(), true);
+    }
+
+    private void OnDrawLineSelected()
+    {
+        GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
+        strikerCamera.gameObject.SetActive(false);
+        goalKeeperCamera.gameObject.SetActive(false);
+        screenCamera.gameObject.SetActive(true);
     }
 
     public void UpdateGoalKeeperPosition(Vector3 position, Vector3 handPosition)
@@ -283,13 +300,13 @@ public class FootballController : MonoBehaviour
 
     public void StartShootTimer()
     {
-        Debug.Log("StartShootTimer");
+        //Debug.Log("StartShootTimer");
         scoreController.time.SetTime(10, null);
     }
 
     public void NextRound()
     {
-        Debug.Log("NextRound");
+        //Debug.Log("NextRound");
         NetworkController.Instance.errorMessage = "NextRound";
         elapsedTime = 0;
         isBallSaved = false;
@@ -333,10 +350,7 @@ public class FootballController : MonoBehaviour
         striker.PlayIdleAnimation();
         goalKeeper.PlayIdleAnimation();
         Debug.Log("Reset Match");
-        if (playerType == PlayerType.Striker)
-        {
-            StartCoroutine(GetWeatherData());
-        }
+        CheckWeather();
         elapsedTime = 0;
         isBallSaved = false;
         PlayTransitionAnim();
@@ -355,7 +369,7 @@ public class FootballController : MonoBehaviour
 
     public IEnumerator WaitForResetMatch()
     {
-        Debug.Log("Reset Match");
+        //Debug.Log("Reset Match");
         PlayWinAnimation();
         swipeController.CanSwipe(false);
         elapsedTime = 0;
@@ -378,13 +392,13 @@ public class FootballController : MonoBehaviour
 
     public void PlayTransitionAnim()
     {
-        Debug.Log("PlayTransitionAnim : " + transitionAnim);
+        //Debug.Log("PlayTransitionAnim : " + transitionAnim);
         //transitionAnim.Play();
     }
 
     public bool CheckCurrentMatch()
     {
-        Debug.Log("match count : " + matchDataList.Count + " " + scoreController.GetRound());
+        //Debug.Log("match count : " + matchDataList.Count + " " + scoreController.GetRound());
         if (matchDataList.Count - 1 == scoreController.GetRound())
         {
             return true;

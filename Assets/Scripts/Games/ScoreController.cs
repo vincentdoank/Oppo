@@ -25,7 +25,7 @@ public class PlayerHUD
 
     public void SetScore(ScoreController controller, bool success, int score, int round, Action onMatchEnd)
     {
-        Debug.Log("match : " + round + " " + maxRound);
+        //Debug.Log("match : " + round + " " + maxRound);
         scoreText.text = score.ToString();
         scoreImageValueList[round].sprite = success ? controller.scoreSprite : controller.missSprite;
         if (round >= maxRound - 1)
@@ -116,7 +116,7 @@ public class ScoreController : MonoBehaviour
 
     public void SetScore(List<MatchData> matchDataList, int p1Score, int p2Score)
     {
-        Debug.Log("SetScore : " + p1Score + " " + p2Score);
+        //Debug.Log("SetScore : " + p1Score + " " + p2Score);
         player1Score = p1Score;
         player2Score = p2Score;
         for (int i = 0; i < matchDataList.Count; i++)

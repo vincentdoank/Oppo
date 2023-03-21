@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     protected virtual void Update()
     {
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
-        Debug.LogWarning("playerType : " + playerType.ToString());
+        //Debug.LogWarning("playerType : " + playerType.ToString());
 
         if (playerType == PlayerType.AI)
         {

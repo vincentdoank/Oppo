@@ -51,7 +51,7 @@ public class Striker : Player
     {
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
-            Debug.Log("striker do action");
+            //Debug.Log("striker do action");
             Vector2 offset = Random.insideUnitCircle * 6f;
             shootPosition = FootballController.Instance.goal.position + (Vector3)offset;
             PlayShootAnimation(shootPosition);

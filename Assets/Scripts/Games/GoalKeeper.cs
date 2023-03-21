@@ -166,10 +166,10 @@ public class GoalKeeper : Player
     protected override void DoAction()
     {
         base.DoAction();
-        Debug.LogWarning("isPauseAI");
+        //Debug.LogWarning("isPauseAI");
         if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
-            Debug.LogWarning("goalkeeper AI");
+            //Debug.LogWarning("goalkeeper AI");
             Vector3 targetPos = FootballController.Instance.ball.transform.position;
             Vector3 pos = goalKeeper.position;
 
@@ -238,7 +238,7 @@ public class GoalKeeper : Player
             return;
         }
         canCatch = false;
-        Debug.Log("ball catch");
+        //Debug.Log("ball catch");
         rig.weight = 1f;
         Vector3 ballPosition = FootballController.Instance.ball.transform.position;
         Vector3 leftHandPos = ballPosition - leftHandTarget.InverseTransformPoint(leftHandOffset);
@@ -275,7 +275,7 @@ public class GoalKeeper : Player
 
     public void Release()
     {
-        Debug.Log("release hand");
+        //Debug.Log("release hand");
         leftHandTarget.localPosition = leftHandOffset;
         rightHandTarget.localPosition = rightHandOffset;
         Tweener tween = DOTween.To(() => rig.weight, (weight) => { rig.weight = weight; }, 0f, 0.1f);

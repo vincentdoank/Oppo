@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
         //{
         //    IsServer = true;
         //}
+
         EventManager.onControlTypeSelected += OnControlTypeSelected;
         //EventManager.onConnectToNetwork += CheckControlType;
         //EventManager.onLeaveRoom += ShowMainMenu;

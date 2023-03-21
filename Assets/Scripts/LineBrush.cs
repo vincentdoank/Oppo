@@ -33,12 +33,12 @@ public class LineBrush : SimplePooling
         elapsedFrameTime = 0f;
 
         EventManager.onClearLine += ClearLine;
-        GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
+        //GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
     }
 
     private LineRenderer SpawnLine(Vector3 position)
     {
-        Debug.Log("spawn line");
+        //Debug.Log("spawn line");
         GameObject lineObj = GetItem("line");
         LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
         lineRenderer.transform.parent = lineParent;
@@ -69,7 +69,7 @@ public class LineBrush : SimplePooling
         line.SetPositions(smoothedPoints);
         line.startWidth = width;
         line.endWidth = width;
-        Debug.LogWarning("line position count : " + line.positionCount);
+        //Debug.LogWarning("line position count : " + line.positionCount);
         return smoothedPoints;
     }
 
@@ -95,7 +95,7 @@ public class LineBrush : SimplePooling
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("touch down");
+                //Debug.Log("touch down");
                 isTouchReleased = false;
                 elapsedTimeTouchRelease = 0;
                 //ClearLine();
@@ -126,7 +126,7 @@ public class LineBrush : SimplePooling
                         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
                         worldPos.z = 0;
 
-                        Debug.Log("linelist count : " + lineList.Count, this);
+                        //Debug.Log("linelist count : " + lineList.Count, this);
 
                         prePositionList.Add(worldPos);
 
