@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
     }
     public ControlType controlType;
 
+    public Texture2D texture;
+
     public static GameManager Instance { get; private set; }
 
     private void Start()
@@ -66,9 +68,10 @@ public class GameManager : MonoBehaviour
         //EventManager.onConnectToNetwork += CheckControlType;
         //EventManager.onLeaveRoom += ShowMainMenu;
 
-        HideCaptureButton();
-        HideCameraTexture();
-        HideClearLineButton();
+        //HideCameraTexture();
+
+        TerrainLayer[] tlayers = Terrain.activeTerrain.terrainData.terrainLayers;
+        tlayers[0].diffuseTexture = texture;
 
     }
 
@@ -85,7 +88,7 @@ public class GameManager : MonoBehaviour
         {
             controlTypeController.gameObject.SetActive(true);
             controlTypeController.tweenFade.PlayBackward(null);
-            HideCameraTexture();
+            //HideCameraTexture();
         }
     }
 
@@ -98,8 +101,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            HideCameraTexture();
-            HideCaptureButton();
+            //HideCameraTexture();
         }
     }
 
@@ -174,73 +176,6 @@ public class GameManager : MonoBehaviour
         particle.Play();
     }
 
-    public void ShowReconnectButton()
-    {
-        hud.reconnectButton.gameObject.SetActive(true);
-    }
-
-    public void HideReconnectButton()
-    {
-        hud.reconnectButton.gameObject.SetActive(false);
-    }
-
-    public void ShowCreateRoomButton()
-    {
-        hud.createRoomButton.gameObject.SetActive(true);
-    }
-
-    public void HideCreateRoomButton()
-    {
-        hud.createRoomButton.gameObject.SetActive(false);
-    }
-
-    public void ShowJoinRoomButton()
-    {
-        hud.joinRoomButton.gameObject.SetActive(true);
-        hud.roomNameInputField.gameObject.SetActive(true);
-    }
-
-    public void HideJoinRoomButton()
-    {
-        hud.joinRoomButton.gameObject.SetActive(false);
-        hud.roomNameInputField.gameObject.SetActive(false);
-    }
-
-    public void ShowExitRoomButton()
-    {
-        hud.exitRoomButton.gameObject.SetActive(true);
-    }
-
-    public void HideExitRoomButton()
-    {
-        hud.exitRoomButton.gameObject.SetActive(false);
-    }
-
-    public void ShowDeviceCount()
-    {
-        hud.connectedDeviceCountText.gameObject.SetActive(true);
-    }
-
-    public void HideDeviceCount()
-    {
-        hud.connectedDeviceCountText.gameObject.SetActive(false);
-    }
-
-    public void SetDeviceCount(int count)
-    {
-        hud.connectedDeviceCountText.text = "Connected Device : " + count.ToString();
-    }
-
-    public void ShowRoomName()
-    {
-        hud.roomNameText.gameObject.SetActive(true);
-    }
-
-    public void HideRoomName()
-    {
-        hud.roomNameText.gameObject.SetActive(false);
-    }
-
     public void ShowControlTypeDropdown()
     {
         //hud.controlTypeDropdown.gameObject.SetActive(true);
@@ -249,11 +184,6 @@ public class GameManager : MonoBehaviour
     public void HideControlTypeDropdown()
     {
         //hud.controlTypeDropdown.gameObject.SetActive(false);
-    }
-
-    public void ShowCaptureButton()
-    {
-        hud.captureCameraButton.gameObject.SetActive(true);
     }
 
     public void ShowCameraTexture()
@@ -265,26 +195,6 @@ public class GameManager : MonoBehaviour
     {
         webCamera.photoImage.transform.parent.gameObject.SetActive(false);
         webCamera.capturedPhotoImage.gameObject.SetActive(false);
-    }
-
-    public void HideCaptureButton()
-    {
-        hud.captureCameraButton.gameObject.SetActive(false);
-    }
-
-    public void ShowClearLineButton()
-    {
-        hud.clearLineButton.gameObject.SetActive(true);    
-    }
-
-    public void HideClearLineButton()
-    {
-        hud.clearLineButton.gameObject.SetActive(false);
-    }
-
-    public void SetRoomName(string roomName)
-    {
-        hud.roomNameText.text = roomName;
     }
 
     public void SetDrawingLine(int index, List<Vector3> points)

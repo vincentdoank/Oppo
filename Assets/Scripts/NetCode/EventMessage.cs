@@ -765,7 +765,7 @@ namespace WTI.NetCode
             // this unnamed message.
             reader.ReadValueSafe(out byte messageType);
             // Example purposes only, you might handle this in a more optimal way
-            Debug.Log("message type : " + messageType.ToString());
+            //Debug.Log("message type : " + messageType.ToString());
             switch (messageType)
             {
                 //case 0:
@@ -891,7 +891,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedPhoneTiltEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("received message");
+            //Debug.Log("received message");
             reader.ReadValueSafe(out float angle);
 
             if (IsServer)
@@ -903,7 +903,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedGoalKeeperPositionEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedGoalKeeperPositionEventMessage message");
+            //Debug.Log("OnReceivedGoalKeeperPositionEventMessage message");
             reader.ReadValueSafe(out Vector3 position);
             reader.ReadValueSafe(out Vector3 handPosition);
             if (IsServer)
@@ -915,7 +915,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedFootballPositionEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedFootballPositionEventMessage message");
+            //Debug.Log("OnReceivedFootballPositionEventMessage message");
             reader.ReadValueSafe(out Vector3 position);
             reader.ReadValueSafe(out Vector3 eulerAngle);
             if (IsServer)
@@ -1117,13 +1117,13 @@ namespace WTI.NetCode
 
         private void OnLineDrawn(int index, List<Vector3> points)
         {
-            Debug.Log("OnLineDrawn");
+            //Debug.Log("OnLineDrawn");
             GameManager.Instance.SetDrawingLine(index, points);
         }
 
         private void OnPhoneAngleChanged(float angle)
         {
-            Debug.Log("OnPhoneAngleChanged");
+            //Debug.Log("OnPhoneAngleChanged");
             GameManager.Instance.SetKiteAngle(angle);
             NetworkController.Instance.ipText.text = "angle : " + angle;
         }

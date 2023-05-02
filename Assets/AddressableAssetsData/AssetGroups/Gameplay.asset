@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Gameplay
+  m_EditorClassIdentifier: 
+  m_GroupName: Gameplay
+  m_Data:
+    m_SerializedData: []
+  m_GUID: fedda4d03fbf77f4f89f434411786ab6
+  m_SerializeEntries:
+  - m_GUID: dc66b26cbd32375448980c732dcbf699
+    m_Address: Ball1_mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 765c88809e3d01c469eddeaf487ae343
+    m_Address: Ball2_mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4c358e3992ff1c499325a49d988a783
+    m_Address: Ball3_mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de8279c9aced93d46a7da82c4fc5eebe
+    m_Address: Ball1_texture
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0da9a5a0a069904090cd1fea31a9e6e
+    m_Address: Ball2_texture
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 330283ae2428d4e49a56a0043b0e59af
+    m_Address: Ball3_texture
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Ball
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 90985fd83a96837498d233ca5964b188, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1ec54c86b9ed4354293e1d07678ace05, type: 2}
+    - {fileID: 11400000, guid: 567d43b1afe9f024aa388fec0d9d9a8c, type: 2}

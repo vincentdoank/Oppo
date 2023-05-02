@@ -70,7 +70,6 @@ public class WebCamera : MonoBehaviour
 
     private void CaptureCamera()
     {
-        GameManager.Instance.HideCaptureButton();
         StartCoroutine(WaitCaptureCamera());
     }
 
@@ -85,7 +84,6 @@ public class WebCamera : MonoBehaviour
         capturedImageResult.texture = cachedPhotoTexture;
         capturedImageResult.gameObject.SetActive(true);
         yield return new WaitForEndOfFrame();
-        GameManager.Instance.ShowCaptureButton();
     }
 
     public byte[] GetCapturedPhoto()

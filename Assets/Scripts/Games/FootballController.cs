@@ -53,7 +53,8 @@ public class FootballController : MonoBehaviour
     {
         None,
         Striker,
-        GoalKeeper
+        GoalKeeper,
+        Draw
     }
 
     public PlayerType playerType = PlayerType.None;
@@ -263,10 +264,13 @@ public class FootballController : MonoBehaviour
 
     private void OnDrawLineSelected()
     {
+        playerType = PlayerType.Draw;
         GameManager.Instance.controlType = GameManager.ControlType.SHAKEDRAW;
         strikerCamera.gameObject.SetActive(false);
         goalKeeperCamera.gameObject.SetActive(false);
         screenCamera.gameObject.SetActive(true);
+
+        OnDrawLineSelected(GameManager.Instance.GetClientId(), true);
     }
 
     public void UpdateGoalKeeperPosition(Vector3 position, Vector3 handPosition)
@@ -293,8 +297,6 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             striker.PlayShootAnimation(Vector3.forward * 25);
-
-            NetworkController.Instance.statusText.text = "Forward Shoot";
         }
     }
 
@@ -375,7 +377,7 @@ public class FootballController : MonoBehaviour
         elapsedTime = 0;
         isBallSaved = false;
         ball.isShooting = false;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         striker.PlayIdleAnimation();
         goalKeeper.PlayIdleAnimation();
         matchDataList.Clear();
@@ -440,6 +442,18 @@ public class FootballController : MonoBehaviour
         }
     }
 
+    public void OnDrawLineSelected(ulong clientId, bool isSelected)
+    {
+        if (isSelected)
+        {
+            clientsRoleDict.Add(clientId, (int)PlayerType.Draw);
+        }
+        else
+        {
+            clientsRoleDict.Remove(clientId);
+        }
+    }
+
     public void OnPartOfDayChanged(int part)
     {
         skyController.OnPartOfDayChanged(part);
@@ -471,6 +485,10 @@ public class FootballController : MonoBehaviour
             else if (clientsRoleDict[clientId] == (int)PlayerType.GoalKeeper)
             {
                 EventManager.onGoalKeeperSelected.Invoke(clientId, false);
+            }
+            else if (clientsRoleDict[clientId] == (int)PlayerType.Draw)
+            {
+                EventManager.onClearLine.Invoke();
             }
 
             clientsRoleDict.Remove(clientId);

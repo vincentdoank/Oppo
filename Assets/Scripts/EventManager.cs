@@ -48,6 +48,9 @@ public class EventManager : MonoBehaviour
 
     public static Action onDebugButtonClicked;
     public static Action<string> sendNetworkMessage;
-    
+
+    public static Action<float> onProgressLoadingUpdated;
+
+
 
 }

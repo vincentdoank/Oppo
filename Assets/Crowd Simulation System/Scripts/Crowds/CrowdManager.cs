@@ -20,10 +20,7 @@ public class CrowdManager : MonoBehaviour
     {
         foreach (GameObject CrowdPerson in Crowd)
         {
-            if (CrowdPerson.GetComponentInChildren<Animation>())
-            {
-                CrowdPerson.GetComponentInChildren<Animation>().Play("idle_1");
-            }
+            CrowdPerson.GetComponentInChildren<Animation>()?.CrossFade("idle_1", 0.2f);
         }
     }
 
@@ -31,10 +28,7 @@ public class CrowdManager : MonoBehaviour
     {
         foreach (GameObject CrowdPerson in Crowd)
         {
-            if (CrowdPerson.GetComponentInChildren<Animation>())
-            {
-                CrowdPerson.GetComponentInChildren<Animation>().Play("clapping_1");
-            }
+            CrowdPerson.GetComponentInChildren<Animation>()?.CrossFade("clapping_1", 0.2f);
         }
     }
 
@@ -42,10 +36,7 @@ public class CrowdManager : MonoBehaviour
     {
         foreach (GameObject CrowdPerson in Crowd)
         {
-            if (CrowdPerson.GetComponentInChildren<Animation>())
-            {
-                CrowdPerson.GetComponentInChildren<Animation>().Play("cheering_1");
-            }
+            CrowdPerson.GetComponentInChildren<Animation>()?.CrossFade("cheering_1", 0.2f);
         }
     }
 
@@ -53,10 +44,7 @@ public class CrowdManager : MonoBehaviour
     {
         foreach (GameObject CrowdPerson in Crowd)
         {
-            if (CrowdPerson.GetComponentInChildren<Animation>())
-            {
-                CrowdPerson.GetComponentInChildren<Animation>().Play("wave_1");
-            }
+            CrowdPerson.GetComponentInChildren<Animation>()?.CrossFade("wave_1", 0.2f);
         }
     }
 
@@ -64,10 +52,7 @@ public class CrowdManager : MonoBehaviour
     {
         foreach (GameObject CrowdPerson in Crowd)
         {
-            if (CrowdPerson.GetComponentInChildren<Animation>())
-            {
-                CrowdPerson.GetComponentInChildren<Animation>().Play("sitting_1");
-            }
+            CrowdPerson.GetComponentInChildren<Animation>()?.CrossFade("sitting_1", 0.2f);
         }
     }
 
@@ -77,8 +62,10 @@ public class CrowdManager : MonoBehaviour
         {
             if (CrowdPerson.GetComponentInChildren<Animation>())
             {
-                CrowdPerson.GetComponentInChildren<Animation>().clip = Animations[Random.Range(0, Animations.Length)];
-                CrowdPerson.GetComponentInChildren<Animation>().Play();
+                AnimationClip clip = Animations[Random.Range(0, Animations.Length)];
+                Animation animation = CrowdPerson.GetComponentInChildren<Animation>();
+                animation.clip = clip;
+                animation.CrossFade(clip.name, 0.2f);
             }
         }
     }
@@ -95,7 +82,11 @@ public class CrowdManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            CrowdRandom();
+            CrowdCheer();
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            CrowdWave();
         }
     }
 

@@ -7,16 +7,8 @@ using System.Text.RegularExpressions;
 
 public class HUDController : MonoBehaviour
 {
-    public Button reconnectButton;
-    public Button createRoomButton;
-    public Button joinRoomButton;
-    public Button exitRoomButton;
-    public Button captureCameraButton;
-    public Button clearLineButton;
     public Button calibrateButton;
 
-    public TMP_Text roomNameText;
-    public TMP_Text connectedDeviceCountText;
     public TMP_InputField roomNameInputField;
     public TMP_Dropdown controlTypeDropdown;
 
@@ -25,14 +17,8 @@ public class HUDController : MonoBehaviour
 
     private void OnEnable()
     {
-        reconnectButton.onClick.AddListener(OnConnectButtonClicked);
-        createRoomButton.onClick.AddListener(OnCreateButtonClicked);
-        joinRoomButton.onClick.AddListener(OnJoinRoomButtonClicked);
-        exitRoomButton.onClick.AddListener(OnExitButtonClicked);
-        captureCameraButton.onClick.AddListener(OnCaptureButtonClicked);
-        clearLineButton.onClick.AddListener(OnClearLineButtonClicked);
         calibrateButton.onClick.AddListener(OnCalibrateButtonClicked);
-        debugButton.onClick.AddListener(OnDebugButtonClicked);
+        //debugButton.onClick.AddListener(OnDebugButtonClicked);
 
         //Array controlTypeArray = Enum.GetValues(typeof(GameManager.ControlType));
         //for (int i = 0; i < controlTypeArray.Length; i++)
@@ -54,7 +40,7 @@ public class HUDController : MonoBehaviour
         //        text = GetUpperCaseFirstLetter(GameManager.ControlType.SHAKE.ToString())
         //    }
         //});
-        controlTypeDropdown.onValueChanged.AddListener(OnControlTypeDropDownSelected);
+        //controlTypeDropdown.onValueChanged.AddListener(OnControlTypeDropDownSelected);
 
         //backgroundObj.SetActive(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.WindowsEditor);
 
@@ -63,11 +49,6 @@ public class HUDController : MonoBehaviour
 
     private void OnDisable()
     {
-        reconnectButton.onClick.RemoveListener(OnConnectButtonClicked);
-        createRoomButton.onClick.RemoveListener(OnCreateButtonClicked);
-        joinRoomButton.onClick.RemoveListener(OnJoinRoomButtonClicked);
-        exitRoomButton.onClick.RemoveListener(OnExitButtonClicked);
-
         debugButton.onClick.RemoveListener(EventManager.onDebugButtonClicked.Invoke);
     }
 

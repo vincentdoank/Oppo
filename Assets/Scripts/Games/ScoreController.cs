@@ -12,6 +12,7 @@ public class PlayerHUD
 
     public TMP_Text nameText;
     public TMP_Text scoreText;
+    public Image playerNamePanelImage;
     public List<Image> scoreImageValueList;
 
     public void Reset(ScoreController controller)
@@ -43,6 +44,8 @@ public class ScoreController : MonoBehaviour
     public Sprite scoreSprite;
     public Sprite missSprite;
     public Sprite defSprite;
+
+    public Image scorePanelImage;
 
     public TimeController time;
 
@@ -124,6 +127,34 @@ public class ScoreController : MonoBehaviour
             player1Hud.SetScore(this, matchDataList[i].winnerId == (int)Player.player1, player1Score, i, null);
             player2Hud.SetScore(this, matchDataList[i].winnerId == (int)Player.player2, player2Score, i, null);
         }
+    }
+
+    public void ChangePlayer1Name(string name)
+    {
+        player1Hud.nameText.text = name;
+    }
+
+    public void ChangePlayer2Name(string name)
+    {
+        player2Hud.nameText.text = name;
+    }
+
+    public void ChangePlayer1NameBackground(Sprite sprite)
+    {
+        player1Hud.playerNamePanelImage.sprite = sprite;
+        player1Hud.playerNamePanelImage.type = Image.Type.Sliced;
+    }
+
+    public void ChangePlayer2NameBackground(Sprite sprite)
+    {
+        player2Hud.playerNamePanelImage.sprite = sprite;
+        player2Hud.playerNamePanelImage.type = Image.Type.Sliced;
+    }
+
+    public void ChangeScoreBackground(Sprite sprite)
+    {
+        scorePanelImage.sprite = sprite;
+        scorePanelImage.type = Image.Type.Sliced;
     }
 
     public int GetRound()

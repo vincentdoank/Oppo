@@ -12,7 +12,6 @@ namespace WTI.NetCode
     /// </summary>
     public class NetworkController : MonoBehaviour
     {
-        public TMPro.TMP_Text statusText;
         public TMPro.TMP_Text ipText;
         public NetworkTransport transport;
 
@@ -44,12 +43,6 @@ namespace WTI.NetCode
             
             EventManager.onGetIsConnected += GetIsConnected;
             EventManager.onUseCameraSelected += OnWebCameraUsed;
-
-            GameManager.Instance.HideCreateRoomButton();
-            GameManager.Instance.HideJoinRoomButton();
-            GameManager.Instance.HideExitRoomButton();
-            GameManager.Instance.HideDeviceCount();
-            GameManager.Instance.HideRoomName();
 
             yield return null;
             
@@ -97,7 +90,6 @@ namespace WTI.NetCode
 
         private void OnFailed()
         {
-            statusText.text = "Failed";
             errorMessage = "Failed";
         }
 
@@ -112,8 +104,6 @@ namespace WTI.NetCode
                     if (NetworkManager.Singleton.StartServer())
                     {
                         errorMessage = "Server connected";
-                        GameManager.Instance.HideCreateRoomButton();
-                        GameManager.Instance.HideReconnectButton();
                         EventManager.onNetworkConnected?.Invoke();
                         Debug.LogWarning("server started");
                     }
@@ -127,23 +117,19 @@ namespace WTI.NetCode
                     if (NetworkManager.Singleton.StartClient())
                     {
                         errorMessage = "client connected";
-                        GameManager.Instance.HideJoinRoomButton();
-                        GameManager.Instance.HideReconnectButton();
                         GameManager.Instance.CheckControlType();
                         EventManager.onNetworkConnected?.Invoke();
-                        statusText.text = "connect button";
                         Debug.LogWarning("client started");
                     }
                     else
                     {
-                        statusText.text = "failed";
                         errorMessage = "failed";
                     }
                 }
             }
             catch
             {
-                statusText.text = "error";
+
             }
         }
 
@@ -159,22 +145,16 @@ namespace WTI.NetCode
                 //PhotonNetwork.LeaveRoom(PhotonNetwork.IsMasterClient);
                 if (GameManager.Instance.IsServer)
                 {
-                    GameManager.Instance.ShowReconnectButton();
                     GameManager.Instance.HideControlTypeDropdown();
                 }
                 else
                 {
                     GameManager.Instance.ShowControlTypeDropdown();
                 }
-                GameManager.Instance.HideDeviceCount();
-                GameManager.Instance.HideRoomName();
-                GameManager.Instance.HideExitRoomButton();
-                GameManager.Instance.ShowReconnectButton();
-                statusText.text = "exited room";
             }
             catch (Exception exc)
             {
-                statusText.text = exc.Message;
+
             }
         }
 
@@ -183,16 +163,13 @@ namespace WTI.NetCode
         private void OnCheckApprovalConnection(NetworkManager.ConnectionApprovalRequest req, NetworkManager.ConnectionApprovalResponse resp)
         {
             resp.Approved = (NetworkManager.Singleton.ConnectedClientsIds.Count < GameManager.Instance.maxUser + 1);
-            statusText.text = "response : " + resp.Approved;
             Debug.LogWarning("Check Approval");
         }
 
         public void OnServerStarted()
         {
-            GameManager.Instance.HideReconnectButton();
             Debug.Log("server started");
             //GameManager.Instance.ShowExitRoomButton();
-            statusText.text = "started";
             //FootballController.Instance.ApplyRole();
 
             FootballController.Instance.SendPlayerData();
@@ -203,9 +180,7 @@ namespace WTI.NetCode
             //Debug.LogWarning("OnConnected : " + clientId + "  " + NetworkManager.Singleton.ConnectedClients.Count);
             if (clientId == NetworkManager.Singleton.LocalClientId)
             {
-                GameManager.Instance.HideReconnectButton();
                 //GameManager.Instance.ShowExitRoomButton();
-                statusText.text = "connected";
 
                 OnDevicePaired();
                 FootballController.Instance.CheckState();
@@ -226,14 +201,7 @@ namespace WTI.NetCode
             Debug.Log("Disconnect : " + clientId);
             if (clientId == NetworkManager.Singleton.LocalClientId)
             {
-                statusText.text = "disconnected";
-
                 //GameManager.Instance.ShowReconnectButton();
-                GameManager.Instance.HideCreateRoomButton();
-                GameManager.Instance.HideJoinRoomButton();
-                GameManager.Instance.HideExitRoomButton();
-                GameManager.Instance.HideDeviceCount();
-                GameManager.Instance.HideRoomName();
 
             }
             if (NetworkManager.Singleton.IsServer)
@@ -255,13 +223,11 @@ namespace WTI.NetCode
 
         public void OnJoinedRoom()
         {
-            GameManager.Instance.ShowExitRoomButton();
         }
 
         public void OnWebCameraUsed()
         {
             ipText.text = "WebCam open";
-            GameManager.Instance.ShowCaptureButton();
             //GameManager.Instance.ShowCameraTexture();
         }
 
@@ -270,8 +236,6 @@ namespace WTI.NetCode
         private void OnDevicePaired()
         {
             GameManager.Instance.HideControlTypeDropdown();
-            GameManager.Instance.HideDeviceCount();
-            GameManager.Instance.HideRoomName();
         }
 
         //private void OnGUI()

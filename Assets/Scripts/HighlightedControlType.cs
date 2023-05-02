@@ -72,7 +72,6 @@ public class HighlightedControlType : MonoBehaviour
                 break;
             case "Selfie":
                 index = (int)GameManager.ControlType.PICTURE;
-                GameManager.Instance.ShowClearLineButton();
                 break;
         }
         EventManager.onControlTypeSelected?.Invoke(index);

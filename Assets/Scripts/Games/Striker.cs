@@ -38,17 +38,18 @@ public class Striker : Player
         animator.SetTrigger("Shoot");
     }
 
-    protected override void Update()
-    {
-        base.Update();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            PlayShootAnimation(shootPosition);
-        }
-    }
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        PlayShootAnimation(shootPosition);
+    //    }
+    //}
 
     protected override void DoAction()
     {
+        base.DoAction();
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
             //Debug.Log("striker do action");

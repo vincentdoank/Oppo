@@ -16,23 +16,32 @@ public class PopupMessage : MonoBehaviour
 
     public Transform panel;
 
+    private Tweener tween;
+
     private void Start()
     {
         panel.transform.localScale = Vector3.zero;
-        Tweener tween = panel.DOScale(Vector3.one, 0.2f);
+
+        tween = panel.DOScale(Vector3.one, 0.2f);
+        //tween.Play();
+    }
+
+    public void PlayAnimation(Vector3 toScale)
+    {
+        tween = panel.DOScale(toScale, 0.2f);
         tween.Play();
     }
 
-    public void ShoweMessage(string title = "", string content = "", Action onButtonClicked = null)
+    public void ShowMessage(string title = "", string content = "", Action onButtonClicked = null)
     {
         titleText.text = title;
         contentText.text = content;
         singleButton.onClick.RemoveAllListeners();
         singleButton.onClick.AddListener(() => onButtonClicked?.Invoke());
-        singleButton.onClick.AddListener(Hide);
         singleButton.gameObject.SetActive(true);
         acceptButton.gameObject.SetActive(false);
         rejectButton.gameObject.SetActive(false);
+        panel.localScale = Vector3.zero;
     }
 
     public void ShowConfirmationMessage(string title = "", string content = "", Action onAcceptButtonClicked = null, Action onRejectButtonClicked = null)
@@ -41,13 +50,12 @@ public class PopupMessage : MonoBehaviour
         contentText.text = content;
         acceptButton.onClick.RemoveAllListeners();
         acceptButton.onClick.AddListener(() => onAcceptButtonClicked?.Invoke());
-        acceptButton.onClick.AddListener(Hide);
         rejectButton.onClick.RemoveAllListeners();
         rejectButton.onClick.AddListener(() => onRejectButtonClicked?.Invoke());
-        rejectButton.onClick.AddListener(Hide);
         singleButton.gameObject.SetActive(false);
         acceptButton.gameObject.SetActive(true);
         rejectButton.gameObject.SetActive(true);
+        panel.localScale = Vector3.zero;
     }
 
     private void Hide()

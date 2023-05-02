@@ -10,7 +10,7 @@ public class PopupMessageController : MonoBehaviour
 
     private Dictionary<string, GameObject> popupMessageDict = new Dictionary<string, GameObject>();
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
     }
@@ -27,8 +27,9 @@ public class PopupMessageController : MonoBehaviour
         popup.transform.localPosition = Vector3.zero;
         popup.transform.localEulerAngles = Vector3.zero;
 
+        onButtonClicked = () => HideMessage(id);
         PopupMessage popupMessage = popup.GetComponent<PopupMessage>();
-        popupMessage?.ShoweMessage(title, content, onButtonClicked);
+        popupMessage?.ShowMessage(title, content, onButtonClicked);
         popupMessageDict.Add(id, popup);
     }
 
@@ -44,6 +45,8 @@ public class PopupMessageController : MonoBehaviour
         popup.transform.localPosition = Vector3.zero;
         popup.transform.localEulerAngles = Vector3.zero;
 
+        onAcceptButtonClicked = () => HideMessage(id);
+        onRejectButtonClicked = () => HideMessage(id);
         PopupMessage popupMessage = popup.GetComponent<PopupMessage>();
         popupMessage?.ShowConfirmationMessage(title, content, onAcceptButtonClicked, onRejectButtonClicked);
         popupMessageDict.Add(id, popup);
@@ -54,6 +57,7 @@ public class PopupMessageController : MonoBehaviour
         if (popupMessageDict.ContainsKey(id))
         {
             Destroy(popupMessageDict[id]);
+            popupMessageDict.Remove(id);
         }
     }
 }

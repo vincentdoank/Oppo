@@ -1,7 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
+[Serializable]
+public class BodyPart
+{
+    public string partName;
+    public SkinnedMeshRenderer meshRenderer;
+    public Material material;
+}
 
 public class Player : MonoBehaviour
 {
@@ -25,15 +34,28 @@ public class Player : MonoBehaviour
 
     public Animator animator;
 
+    public List<BodyPart> bodyPartList;
+
     private void Start()
     {
         playerType = PlayerType.Human;
+    }
 
+    public void AssignBodyPart(string partName, Mesh mesh, Texture2D texture)
+    {
+        foreach (BodyPart part in bodyPartList)
+        {
+            if (part.partName == partName)
+            {
+                part.meshRenderer.BakeMesh(mesh);
+                part.meshRenderer.material.mainTexture = texture;
+            }
+        }
     }
 
     protected virtual void Update()
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        //if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
         //Debug.LogWarning("playerType : " + playerType.ToString());
 
         if (playerType == PlayerType.AI)
