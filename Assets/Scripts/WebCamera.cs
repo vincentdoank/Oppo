@@ -101,36 +101,36 @@ public class WebCamera : MonoBehaviour
         return photoSize;
     }
 
-    public void SetPhoto(byte[] photo, int width, int height)
-    {
-        GameManager.Instance.ShowCameraTexture();
-        Texture2D tex = new Texture2D(width, height);
-        tex.LoadImage(photo);
-        photoImage.texture = tex;
-    }
+    //public void SetPhoto(byte[] photo, int width, int height)
+    //{
+    //    GameManager.Instance.ShowCameraTexture();
+    //    Texture2D tex = new Texture2D(width, height);
+    //    tex.LoadImage(photo);
+    //    photoImage.texture = tex;
+    //}
 
-    public void SetPhoto(byte[] photo)
-    {
-        GameManager.Instance.ShowCameraTexture();
-        Texture2D tex = new Texture2D(500, 500);
-        tex.LoadImage(photo);
-        photoImage.texture = tex;
-    }
+    //public void SetPhoto(byte[] photo)
+    //{
+    //    GameManager.Instance.ShowCameraTexture();
+    //    Texture2D tex = new Texture2D(500, 500);
+    //    tex.LoadImage(photo);
+    //    photoImage.texture = tex;
+    //}
 
-    public void SetPhoto(string encodedPhoto, int width, int height)
-    {
-        GameManager.Instance.ShowCameraTexture();
-        Texture2D tex = new Texture2D(width, height);
-        tex.LoadImage(Convert.FromBase64String(encodedPhoto));
-        photoImage.texture = tex;
-        photoImage.rectTransform.sizeDelta = new Vector2(height / 1.8f, width / 1.8f);
-    }
+    //public void SetPhoto(string encodedPhoto, int width, int height)
+    //{
+    //    GameManager.Instance.ShowCameraTexture();
+    //    Texture2D tex = new Texture2D(width, height);
+    //    tex.LoadImage(Convert.FromBase64String(encodedPhoto));
+    //    photoImage.texture = tex;
+    //    photoImage.rectTransform.sizeDelta = new Vector2(height / 1.8f, width / 1.8f);
+    //}
 
-    public void SetPhoto(string encodedPhoto)
-    {
-        GameManager.Instance.ShowCameraTexture();
-        Texture2D tex = new Texture2D(500, 500);
-        tex.LoadImage(Convert.FromBase64String(encodedPhoto));
-        photoImage.texture = tex;
-    }
+    //public void SetPhoto(string encodedPhoto)
+    //{
+    //    GameManager.Instance.ShowCameraTexture();
+    //    Texture2D tex = new Texture2D(500, 500);
+    //    tex.LoadImage(Convert.FromBase64String(encodedPhoto));
+    //    photoImage.texture = tex;
+    //}
 }

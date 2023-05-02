@@ -10,23 +10,18 @@ public class GameManager : MonoBehaviour
 {
     public int maxUser = 3;
 
-    public ParticleSystem particle;
     public LineBrush lineBrush;
-    public KiteController[] kites;
-    public WebCamera webCamera;
+    //public KiteController[] kites;
+    //public WebCamera webCamera;
     public FootballController footballController;
     public SelectableControlType controlTypeController;
 
     public HUDController hud;
-    public Color serverColor = Color.blue;
-    public Color clientColor = Color.red;
     public UnityEvent onServer;
     public UnityEvent onClient;
 
-    public int curDebugClickCount;
-
-    public float elapsedTime = 0;
-    public float resetTime = 0.5f;
+    //public float elapsedTime = 0;
+    //public float resetTime = 0.5f;
 
     public bool IsServer { get; private set; }
     public bool IsConnected { get; private set; }
@@ -39,8 +34,6 @@ public class GameManager : MonoBehaviour
         PICTURE = 3
     }
     public ControlType controlType;
-
-    public Texture2D texture;
 
     public static GameManager Instance { get; private set; }
 
@@ -69,10 +62,6 @@ public class GameManager : MonoBehaviour
         //EventManager.onLeaveRoom += ShowMainMenu;
 
         //HideCameraTexture();
-
-        TerrainLayer[] tlayers = Terrain.activeTerrain.terrainData.terrainLayers;
-        tlayers[0].diffuseTexture = texture;
-
     }
 
     private void OnDestroy()
@@ -171,11 +160,6 @@ public class GameManager : MonoBehaviour
         controlType = (ControlType)index;
     }
 
-    public void PlayParticle()
-    {
-        particle.Play();
-    }
-
     public void ShowControlTypeDropdown()
     {
         //hud.controlTypeDropdown.gameObject.SetActive(true);
@@ -186,49 +170,49 @@ public class GameManager : MonoBehaviour
         //hud.controlTypeDropdown.gameObject.SetActive(false);
     }
 
-    public void ShowCameraTexture()
-    {
-        webCamera.photoImage.transform.parent.gameObject.SetActive(true);
-    }
+    //public void ShowCameraTexture()
+    //{
+    //    webCamera.photoImage.transform.parent.gameObject.SetActive(true);
+    //}
 
-    public void HideCameraTexture()
-    {
-        webCamera.photoImage.transform.parent.gameObject.SetActive(false);
-        webCamera.capturedPhotoImage.gameObject.SetActive(false);
-    }
+    //public void HideCameraTexture()
+    //{
+    //    webCamera.photoImage.transform.parent.gameObject.SetActive(false);
+    //    webCamera.capturedPhotoImage.gameObject.SetActive(false);
+    //}
 
     public void SetDrawingLine(int index, List<Vector3> points)
     {
         lineBrush.SetLine(index, points);
     }
 
-    public void SetKiteAngle(float angle)
-    {
-        foreach (KiteController kite in kites)
-        {
-            kite.SetAngle(angle);
-        }
-    }
+    //public void SetKiteAngle(float angle)
+    //{
+    //    foreach (KiteController kite in kites)
+    //    {
+    //        kite.SetAngle(angle);
+    //    }
+    //}
 
-    public void SetPicture(byte[] photo)
-    {
-        webCamera.SetPhoto(photo);
-    }
+    //public void SetPicture(byte[] photo)
+    //{
+    //    webCamera.SetPhoto(photo);
+    //}
 
-    public void SetPicture(byte[] photo, int width, int height)
-    {
-        webCamera.SetPhoto(photo, width, height);
-    }
+    //public void SetPicture(byte[] photo, int width, int height)
+    //{
+    //    webCamera.SetPhoto(photo, width, height);
+    //}
 
-    public void SetPicture(string encodedPhoto)
-    {
-        webCamera.SetPhoto(encodedPhoto);
-    }
+    //public void SetPicture(string encodedPhoto)
+    //{
+    //    webCamera.SetPhoto(encodedPhoto);
+    //}
 
-    public void SetPicture(string encodedPhoto, int width, int height)
-    {
-        webCamera.SetPhoto(encodedPhoto, width, height);
-    }
+    //public void SetPicture(string encodedPhoto, int width, int height)
+    //{
+    //    webCamera.SetPhoto(encodedPhoto, width, height);
+    //}
 
     public void UpdateGoalKeeperPosition(Vector3 position, Vector3 handPosition)
     {

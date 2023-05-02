@@ -61,7 +61,7 @@ namespace WTI.PUN
             switch (photonEvent.Code)
             {
                 case shakeEventCode:
-                    GameManager.Instance.PlayParticle();
+                    //GameManager.Instance.PlayParticle();
                     break;
                 case drawLineEventCode:
                     List<Vector3> points = new List<Vector3>();
@@ -73,7 +73,7 @@ namespace WTI.PUN
                     //GameManager.Instance.SetDrawingLine(points);
                     break;
                 case phoneAngleEventCode:
-                    GameManager.Instance.SetKiteAngle((float)photonEvent.CustomData);
+                    //GameManager.Instance.SetKiteAngle((float)photonEvent.CustomData);
                     break;
 
             }

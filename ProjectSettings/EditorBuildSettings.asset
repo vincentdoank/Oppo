@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/StaticGameplay.unity
+    guid: fce0887b6f9e8f4459bdcdf4ca0bcc4c
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 15319f934223da9428fc6cfb3a0cfbdc, type: 2}

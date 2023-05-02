@@ -871,7 +871,7 @@ namespace WTI.NetCode
             {
                 //SendPhoneShakeEvent();
             }
-            OnPhoneForwardSwing(encodedPhoto, (int)size.x, (int)size.y);
+            //OnPhoneForwardSwing(encodedPhoto, (int)size.x, (int)size.y);
         }
 
         protected void OnReceivedDrawLineEventMessage(ulong clientId, FastBufferReader reader)
@@ -898,7 +898,7 @@ namespace WTI.NetCode
             {
                 //SendPhoneTiltAngle(angle);
             }
-            OnPhoneAngleChanged(angle);
+            //OnPhoneAngleChanged(angle);
         }
 
         protected void OnReceivedGoalKeeperPositionEventMessage(ulong clientId, FastBufferReader reader)
@@ -1090,29 +1090,29 @@ namespace WTI.NetCode
             EventManager.onClearLine?.Invoke();
         }
 
-        private void OnPhoneForwardSwing(byte[] photo)
-        {
-            Debug.Log("OnPhoneShaked");
-            GameManager.Instance.SetPicture(photo);
-        }
+        //private void OnPhoneForwardSwing(byte[] photo)
+        //{
+        //    Debug.Log("OnPhoneShaked");
+        //    GameManager.Instance.SetPicture(photo);
+        //}
 
-        private void OnPhoneForwardSwing(byte[] photo, int width, int height)
-        {
-            Debug.Log("OnPhoneShaked");
-            GameManager.Instance.SetPicture(photo, width, height);
-        }
+        //private void OnPhoneForwardSwing(byte[] photo, int width, int height)
+        //{
+        //    Debug.Log("OnPhoneShaked");
+        //    GameManager.Instance.SetPicture(photo, width, height);
+        //}
 
-        private void OnPhoneForwardSwing(string encodedPhoto)
-        {
-            Debug.Log("OnPhoneShaked");
-            GameManager.Instance.SetPicture(encodedPhoto);
-        }
+        //private void OnPhoneForwardSwing(string encodedPhoto)
+        //{
+        //    Debug.Log("OnPhoneShaked");
+        //    GameManager.Instance.SetPicture(encodedPhoto);
+        //}
 
-        private void OnPhoneForwardSwing(string encodedPhoto, int width, int height)
-        {
-            Debug.Log("OnPhoneShaked");
-            GameManager.Instance.SetPicture(encodedPhoto, width, height);
-        }
+        //private void OnPhoneForwardSwing(string encodedPhoto, int width, int height)
+        //{
+        //    Debug.Log("OnPhoneShaked");
+        //    GameManager.Instance.SetPicture(encodedPhoto, width, height);
+        //}
 
 
         private void OnLineDrawn(int index, List<Vector3> points)
@@ -1121,12 +1121,12 @@ namespace WTI.NetCode
             GameManager.Instance.SetDrawingLine(index, points);
         }
 
-        private void OnPhoneAngleChanged(float angle)
-        {
-            //Debug.Log("OnPhoneAngleChanged");
-            GameManager.Instance.SetKiteAngle(angle);
-            NetworkController.Instance.ipText.text = "angle : " + angle;
-        }
+        //private void OnPhoneAngleChanged(float angle)
+        //{
+        //    //Debug.Log("OnPhoneAngleChanged");
+        //    GameManager.Instance.SetKiteAngle(angle);
+        //    NetworkController.Instance.ipText.text = "angle : " + angle;
+        //}
 
         private void OnGoalKeeperPositionUpdated(Vector3 position, Vector3 handPosition)
         {

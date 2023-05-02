@@ -43,13 +43,13 @@ public class ThrowController : MonoBehaviour
 
             if (acceleration.y <= minDownAccValue)
             {
-                if (GameManager.Instance.controlType == GameManager.ControlType.PICTURE)
-                {
-                    Vector2 size = GameManager.Instance.webCamera.GetPhotoSize();
-                    //EventManager.onCapturedPhotoSent?.Invoke(GameManager.Instance.webCamera.GetCapturedPhoto(), size);
-                    EventManager.onEncodedCapturedPhotoSent?.Invoke(GameManager.Instance.GetClientId(), GameManager.Instance.webCamera.GetEncodedCapturedPhoto(), size);
-                    thrown = true;
-                }
+                //if (GameManager.Instance.controlType == GameManager.ControlType.PICTURE)
+                //{
+                //    Vector2 size = GameManager.Instance.webCamera.GetPhotoSize();
+                //    //EventManager.onCapturedPhotoSent?.Invoke(GameManager.Instance.webCamera.GetCapturedPhoto(), size);
+                //    EventManager.onEncodedCapturedPhotoSent?.Invoke(GameManager.Instance.GetClientId(), GameManager.Instance.webCamera.GetEncodedCapturedPhoto(), size);
+                //    thrown = true;
+                //}
             }
         }
     }

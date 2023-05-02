@@ -17,8 +17,8 @@ public class ContentController : MonoBehaviour
 
     private void Start()
     {
-        downloadButton.onClick.AddListener(DownloadAssets);
-        loadLocalButton.onClick.AddListener(LoadLocalAssets);
+        downloadButton?.onClick.AddListener(DownloadAssets);
+        loadLocalButton?.onClick.AddListener(LoadLocalAssets);
     }
 
     public void LoadLocalAssets()
@@ -132,7 +132,7 @@ public class ContentController : MonoBehaviour
 
     public void DownloadAssets()
     {
-        DownloadContent.Instance.RequestLogin("ssssss111", "ssssssaaaaaaaaasssaa", () => DownloadContent.Instance.RequestToken(() => StartCoroutine(DownloadContent.Instance.RequestContent(null))));
+        DownloadContent.Instance.RequestLogin("ssssss111", "ssssssaaaaaaaaasssaa", () => DownloadContent.Instance.RequestToken(() => StartCoroutine(DownloadContent.Instance.RequestContent(LoadLocalAssets))));
         //DownloadContent.Instance.LoadFromTextAsset(LoadLocalAssets);
     }
 

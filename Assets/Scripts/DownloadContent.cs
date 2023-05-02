@@ -126,7 +126,7 @@ public class DownloadContent : MonoBehaviour
                     PlayerPrefs.Save();
 
                     onCompleted?.Invoke();
-
+                    data = null;
                 }
                 //ConvertBase64ToByteArray(Consts.BALL_TEXTURE, data.data.ball_texture);
                 //ConvertBase64ToByteArray(Consts.BANNER_TEXTURE, data.data.banner_texture);
