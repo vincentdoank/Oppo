@@ -103,14 +103,16 @@ public class ScoreController : MonoBehaviour
                 case Player.player1:
                     player1Score += 1;
                     player1Hud.SetScore(this, true, player1Score, round, null);
-                    FootballController.Instance.goal.gameObject.SetActive(false);
+                    FootballController.Instance.ShowGoalArea(false);
+                    FootballController.Instance.ShowMissArea(false);
                     FootballController.Instance.PlayGoalAnimation();
                     player2Hud.SetScore(this, false, player2Score, round, () => StartCoroutine(FootballController.Instance.WaitForResetMatch()));
                     break;
                 case Player.player2:
                     player2Score += 1;
                     player1Hud.SetScore(this, false, player1Score, round, null);
-                    FootballController.Instance.goal.gameObject.SetActive(false);
+                    FootballController.Instance.ShowGoalArea(false);
+                    FootballController.Instance.ShowMissArea(false);
                     player2Hud.SetScore(this, true, player2Score, round, () => StartCoroutine(FootballController.Instance.WaitForResetMatch()));
                     break;
             }

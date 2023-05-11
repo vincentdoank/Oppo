@@ -48,6 +48,7 @@ namespace WTI.NetCode
         private const byte WEATHER_EVENT_CODE = 16;
         private const byte BALL_POSITION_RESET_EVENT_CODE = 17;
         private const byte CATCH_BALL_EVENT_CODE = 18;
+        private const byte SHOOT_POSITION_EVENT_CODE = 19;
 
         private const byte DISCONNECT_EVENT_CODE = 00;
 
@@ -85,6 +86,7 @@ namespace WTI.NetCode
             EventManager.onWeatherChanged += SendWeather;
             EventManager.onBallPositionResetted += SendBallReset;
             EventManager.onBallCaught += SendCatchBall;
+            EventManager.onBallShot += SendShootPosition;
 
             EventManager.onOtherPlayerDisconnected += SendOtherPlayerDisconnectedStat;
         }
@@ -306,7 +308,7 @@ namespace WTI.NetCode
                     if (NetworkManager.IsConnectedClient)
                     {
                         // This method can be used by a client or server (client to server or server to client)
-                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableFragmentedSequenced);
                     }
                 }
             }
@@ -335,15 +337,15 @@ namespace WTI.NetCode
                         //customMessagingManager.SendUnnamedMessage(clientsIds, writer);
                         customMessagingManager.SendUnnamedMessage(clientsIds, writer, NetworkDelivery.ReliableFragmentedSequenced);
                     }
-                    else
-                    {
-                        if (NetworkManager.IsConnectedClient)
-                        {
-                            //customMessagingManager.SendUnnamedMessageToAll(writer);
-                            //customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
-                            customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableFragmentedSequenced);
-                        }
-                    }
+                    //else
+                    //{
+                    //    if (NetworkManager.IsConnectedClient)
+                    //    {
+                    //        //customMessagingManager.SendUnnamedMessageToAll(writer);
+                    //        //customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    //        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer, NetworkDelivery.ReliableFragmentedSequenced);
+                    //    }
+                    //}
                 }
                 catch (Exception exc)
                 {
@@ -725,6 +727,35 @@ namespace WTI.NetCode
             }
         }
 
+        private void SendShootPosition(ulong senderClientId, Vector3 position)
+        {
+            Debug.Log("SendShootPosition");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(SHOOT_POSITION_EVENT_CODE);
+                writer.WriteValueSafe(position);
+
+                if (IsServer)
+                {
+                    //List<ulong> clientsIds = new List<ulong>();
+                    //clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    //clientsIds.Remove(senderClientId);
+                    //customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
         private void SendOtherPlayerDisconnectedStat(ulong senderClientId, ulong clientId)
         {
             NetworkController.Instance.errorMessage = "SendOtherPlayerDisconnectedStat";
@@ -825,6 +856,9 @@ namespace WTI.NetCode
                 case CATCH_BALL_EVENT_CODE:
                     OnReceivedCatchBallEventMessage(clientId, reader);
                     break;
+                case SHOOT_POSITION_EVENT_CODE:
+                    OnReceivedShootPositionEventMessage(clientId, reader);
+                    break;
                 case DISCONNECT_EVENT_CODE:
                     OnReceivedOtherPlayerDisconnectedEventMessage(clientId, reader);
                     break;
@@ -915,14 +949,18 @@ namespace WTI.NetCode
 
         protected void OnReceivedFootballPositionEventMessage(ulong clientId, FastBufferReader reader)
         {
-            //Debug.Log("OnReceivedFootballPositionEventMessage message");
+            Debug.Log("OnReceivedFootballPositionEventMessage message");
             reader.ReadValueSafe(out Vector3 position);
             reader.ReadValueSafe(out Vector3 eulerAngle);
+
             if (IsServer)
             {
                 SendFootballPosition(clientId, position, eulerAngle);
             }
-            OnFootballPositionUpdated(position, eulerAngle);
+            else
+            {
+                OnFootballPositionUpdated(position, eulerAngle);
+            }
         }
 
         protected void OnReceivedShootEventMessage(ulong clientId, FastBufferReader reader)
@@ -1076,6 +1114,20 @@ namespace WTI.NetCode
             }
             OnBallCaught();
         }
+
+        protected void OnReceivedShootPositionEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedShootPosiitonEventMessage message");
+
+            reader.ReadValueSafe(out Vector3 position);
+
+            //if (IsServer)
+            //{
+            //    SendShootPosition(client, position);
+            //}
+            OnBallShot(position);
+        }
+
         protected void OnReceivedOtherPlayerDisconnectedEventMessage(ulong clientid, FastBufferReader reader)
         {
             Debug.Log("OnReceivedOtherPlayerDisconnectedEventMessage");
@@ -1200,6 +1252,12 @@ namespace WTI.NetCode
         {
             FootballController.Instance.OnBallCaught();
         }
+
+        private void OnBallShot(Vector3 position)
+        {
+            FootballController.Instance.OnBallShot(position);    
+        }
+
         private void OnOtherPlayerDisconnected(ulong clientId)
         {
             FootballController.Instance.OnDisconnected(clientId);

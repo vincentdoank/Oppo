@@ -34,6 +34,7 @@ public class FootballController : MonoBehaviour
     public Striker striker;
     public Ball ball;
     public Transform goal;
+    public GameObject missArea;
     public SwipeController swipeController;
     public Image goalImage;
     public Image missImage;
@@ -308,7 +309,7 @@ public class FootballController : MonoBehaviour
 
     public void NextRound()
     {
-        //Debug.Log("NextRound");
+        Debug.LogWarning("NextRound");
         NetworkController.Instance.errorMessage = "NextRound";
         elapsedTime = 0;
         isBallSaved = false;
@@ -317,12 +318,13 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             //goalKeeper.Release();
-            ball.Reset();
+            //ball.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
         if (GameManager.Instance.IsServer)
         {
+            ball.Reset();
             scoreController.time.SetTime(10, () =>
             {
                 EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
@@ -339,11 +341,13 @@ public class FootballController : MonoBehaviour
         {
             striker.PlayWinAnimation();
             goalKeeper.PlayLoseAnimation();
+            WinnerInfoPopup.Instance.Show(PlayerType.Striker);
         }
         else
         {
             striker.PlayLoseAnimation();
             goalKeeper.PlayWinAnimation();
+            WinnerInfoPopup.Instance.Show(PlayerType.GoalKeeper);
         }
     }
 
@@ -351,7 +355,7 @@ public class FootballController : MonoBehaviour
     {
         striker.PlayIdleAnimation();
         goalKeeper.PlayIdleAnimation();
-        Debug.Log("Reset Match");
+        Debug.LogWarning("Reset Match");
         CheckWeather();
         elapsedTime = 0;
         isBallSaved = false;
@@ -362,9 +366,13 @@ public class FootballController : MonoBehaviour
         if (playerType == PlayerType.Striker)
         {
             //goalKeeper.Release();
-            ball.Reset();
+            //ball.Reset();
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
+        }
+        if (GameManager.Instance.IsServer)
+        {
+            ball.Reset();
         }
         CrowdManager.Instance.CrowdRandom();
     }
@@ -400,7 +408,7 @@ public class FootballController : MonoBehaviour
 
     public bool CheckCurrentMatch()
     {
-        //Debug.Log("match count : " + matchDataList.Count + " " + scoreController.GetRound());
+        Debug.Log("match count : " + matchDataList.Count + " " + scoreController.GetRound());
         if (matchDataList.Count - 1 == scoreController.GetRound())
         {
             return true;
@@ -474,6 +482,11 @@ public class FootballController : MonoBehaviour
         goalKeeper.Catch();
     }
 
+    public void OnBallShot(Vector3 position)
+    {
+        ball.SendShootPosition(position);
+    }
+
     public void OnDisconnected(ulong clientId)
     {
         if (clientsRoleDict.ContainsKey(clientId))
@@ -517,5 +530,15 @@ public class FootballController : MonoBehaviour
         {
             PlayWinAnimation();
         }
+    }
+
+    public void ShowGoalArea(bool value)
+    {
+        goal.gameObject.SetActive(value);
+    }
+
+    public void ShowMissArea(bool value)
+    {
+        missArea.SetActive(value);
     }
 }

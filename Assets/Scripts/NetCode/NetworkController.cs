@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.Netcode;
 using System;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine.SceneManagement;
 
 namespace WTI.NetCode
 {
@@ -31,6 +32,14 @@ namespace WTI.NetCode
 
         private IEnumerator Start()
         {
+            if (PlayerPrefs.HasKey("ip"))
+            {
+                NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = PlayerPrefs.GetString("ip");
+            }
+            else
+            {
+                SceneManager.LoadScene("ConfigScreen");
+            }
             yield return null;
             Debug.Log("START");
             Instance = this;

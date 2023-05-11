@@ -47,15 +47,15 @@ public class GameManager : MonoBehaviour
         
         Settings.networkType = Settings.NetworkType.NetCode;
 
-        if (Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            IsServer = true;
-        }
-
-        //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+        //if (Application.platform == RuntimePlatform.WindowsEditor)
         //{
         //    IsServer = true;
         //}
+
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+        {
+            IsServer = true;
+        }
 
         EventManager.onControlTypeSelected += OnControlTypeSelected;
         //EventManager.onConnectToNetwork += CheckControlType;

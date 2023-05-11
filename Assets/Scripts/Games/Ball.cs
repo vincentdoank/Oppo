@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,6 @@ public class Ball : MonoBehaviour
     public Vector3 DefPos { get; private set; }
 
     private float smoothness = 100f;
-    private bool stopUpdate = false;
     public bool isShooting;
     public ParticleSystem puffEffect;
 
@@ -46,9 +46,8 @@ public class Ball : MonoBehaviour
 
     public void Catch(Transform leftHand, Transform rightHand)
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if (GameManager.Instance.IsServer)
         {
-            stopUpdate = true;
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
             rigidBody.isKinematic = true;
@@ -61,13 +60,12 @@ public class Ball : MonoBehaviour
 
     public void Release()
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if (GameManager.Instance.IsServer)
         {
             rigidBody.isKinematic = false;
-            stopUpdate = false;
             leftHand = null;
             rightHand = null;
-            rigidBody.AddForce(FootballController.Instance.goalKeeper.transform.forward * 4f, ForceMode.Impulse);
+            rigidBody.AddForce(FootballController.Instance.goalKeeper.transform.forward * 3f, ForceMode.Impulse);
         }
     }
 
@@ -75,26 +73,45 @@ public class Ball : MonoBehaviour
     {
         Debug.LogWarning("Shoot : " + shootPosition);
         //Reset();
-        FootballController.Instance.goalKeeper.canCatch = true;
-        stopUpdate = false;
-        rigidBody.isKinematic = false;
-        isShooting = true;
-        FootballController.Instance.scoreController.time.Pause(true);
+        //FootballController.Instance.goalKeeper.canCatch = true;
+        //stopUpdate = false;
+        //rigidBody.isKinematic = false;
+        //isShooting = true;
+        //FootballController.Instance.scoreController.time.Pause(true);
         if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         {
-            Vector3 direction = shootPosition - transform.position;
-            Vector3 upForce = Vector3.zero;
-            if (shootPosition.y > transform.position.y)
-            {
-                upForce = Vector3.up * 5f;
-            }
-            rigidBody.AddForce(direction.normalized * 25f + upForce, ForceMode.Impulse);
+            EventManager.onBallShot?.Invoke(GameManager.Instance.GetClientId(), shootPosition);
+            //SendShootPosition(shootPosition);
+            //Vector3 direction = shootPosition - transform.position;
+            //Vector3 upForce = Vector3.zero;
+            //if (shootPosition.y > transform.position.y)
+            //{
+            //    upForce = Vector3.up * 6f;
+            //}
+            //rigidBody.AddForce(direction.normalized * 12f + upForce, ForceMode.Impulse);
         }
         //rigidBody.AddTorque(Vector3.down * 10000, ForceMode.Impulse);
         //float upForce = Random.Range(1, 7);
         //float sideForce = Random.Range(-8, 8);
         //rigidBody.AddForce(Vector3.forward * Random.Range(25, 40) + new Vector3(sideForce, upForce, 0), ForceMode.Impulse);
-        FootballController.Instance.goal.gameObject.SetActive(true);
+        //FootballController.Instance.goal.gameObject.SetActive(true);
+    }
+
+    //SERVER
+    public void SendShootPosition(Vector3 shootPosition)
+    {
+        FootballController.Instance.goalKeeper.canCatch = true;
+        rigidBody.isKinematic = false;
+        isShooting = true;
+        Vector3 direction = shootPosition - transform.position;
+        Vector3 upForce = Vector3.zero;
+        if (shootPosition.y > transform.position.y)
+        {
+            upForce = Vector3.up * 6f;
+        }
+        rigidBody.AddForce(direction.normalized * 12f + upForce, ForceMode.Impulse);
+        FootballController.Instance.ShowGoalArea(true);
+        FootballController.Instance.ShowMissArea(true);
     }
 
     public void AddForce(Vector3 force)
@@ -108,17 +125,18 @@ public class Ball : MonoBehaviour
     {
         //Reset();
         isShooting = true;
+        rigidBody.AddTorque(Vector3.forward * 3f);
         FootballController.Instance.goalKeeper.canCatch = true;
         FootballController.Instance.scoreController.time.Pause(true);
-        Vector3 upForce = Vector3.up * 5f;
-        rigidBody.AddTorque(Vector3.forward * 5f);
-        FootballController.Instance.goal.gameObject.SetActive(true);
+        FootballController.Instance.ShowGoalArea(true);
+        FootballController.Instance.ShowMissArea(true);
     }
 
     private void Update()
     {
-        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        //if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.Striker)
         //if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if(GameManager.Instance.IsServer)
         {
             //rigidBody.isKinematic = false;
             EventManager.onFootballUpdated?.Invoke(GameManager.Instance.GetClientId(), transform.position, transform.localEulerAngles);

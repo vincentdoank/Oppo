@@ -31,6 +31,7 @@ public class Miss : MonoBehaviour
                 matchDataList = FootballController.Instance.matchDataList  
             };
             EventManager.onFootballDataSent?.Invoke(data);
+            gameObject.SetActive(false);
         }
     }
 }

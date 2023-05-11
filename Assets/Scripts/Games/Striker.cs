@@ -35,6 +35,7 @@ public class Striker : Player
     public void PlayShootAnimation()
     {
         Debug.Log("animator : " + animator);
+        FootballController.Instance.scoreController.time.Pause(true);
         animator.SetTrigger("Shoot");
     }
 

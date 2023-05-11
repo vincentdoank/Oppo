@@ -261,6 +261,8 @@ public class GoalKeeper : Player
         FootballController.Instance.ball.Catch(leftHand, rightHand);
         if (GameManager.Instance.IsServer)
         {
+            FootballController.Instance.ShowMissArea(false);
+            FootballController.Instance.ShowGoalArea(false);
             FootballController.Instance.PlaySaveAnimation();
             EventManager.onBallCaught?.Invoke(GameManager.Instance.GetClientId());
         }
