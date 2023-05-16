@@ -1,0 +1,4 @@
+repository "Oppo@WideTechnologies@cloud"
+  path "/"
+    br "/main"
+    co "/main"

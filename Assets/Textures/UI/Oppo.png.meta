@@ -25,7 +25,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMipmapLimit: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -105,18 +105,6 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -281,13 +269,13 @@ TextureImporter:
       name: Oppo_7
       rect:
         serializedVersion: 2
-        x: 1143
+        x: 1145
         y: 174
         width: 586
         height: 261
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 80, y: 70, z: 80, w: 70}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -309,15 +297,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Oppo_0: -1135643092
-      Oppo_1: -1485520160
-      Oppo_2: 2062370201
-      Oppo_3: -583094958
-      Oppo_4: -620562231
-      Oppo_5: 1172671066
       Oppo_6: 470564304
+      Oppo_5: 1172671066
       Oppo_7: -502316504
-  mipmapLimitGroupName: 
+      Oppo_3: -583094958
+      Oppo_0: -1135643092
+      Oppo_4: -620562231
+      Oppo_2: 2062370201
+      Oppo_1: -1485520160
+  spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
