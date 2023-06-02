@@ -32,15 +32,15 @@ namespace WTI.NetCode
 
         private IEnumerator Start()
         {
-            if (PlayerPrefs.HasKey("ip"))
-            {
-                NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = PlayerPrefs.GetString("ip");
-            }
-            else
-            {
-                SceneManager.LoadScene("ConfigScreen");
-            }
-            yield return null;
+        //    if (PlayerPrefs.HasKey("ip"))
+        //    {
+        //        NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = PlayerPrefs.GetString("ip");
+        //    }
+        //    else
+        //    {
+        //        SceneManager.LoadScene("ConfigScreen");
+        //    }
+        //    yield return null;
             Debug.Log("START");
             Instance = this;
             NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
@@ -186,7 +186,7 @@ namespace WTI.NetCode
 
         public void OnConnected(ulong clientId)
         {
-            //Debug.LogWarning("OnConnected : " + clientId + "  " + NetworkManager.Singleton.ConnectedClients.Count);
+            Debug.LogWarning("OnConnected : " + clientId + "  " + NetworkManager.Singleton.ConnectedClients.Count);
             if (clientId == NetworkManager.Singleton.LocalClientId)
             {
                 //GameManager.Instance.ShowExitRoomButton();

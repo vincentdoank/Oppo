@@ -116,8 +116,8 @@ public class FootballController : MonoBehaviour
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
         //OnGoalKeeperSelected();
-        OnStrikerSelected();
-        //OnDrawLineSelected();
+        //OnStrikerSelected();
+        OnDrawLineSelected();
 #else
         screenCamera.gameObject.SetActive(true);
 #endif
