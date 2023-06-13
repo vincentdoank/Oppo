@@ -14,8 +14,11 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/ConfigScreen.unity
     guid: 1a7343f87870e794b85cdc9e5a636b68
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/StaticGameplay.unity
     guid: fce0887b6f9e8f4459bdcdf4ca0bcc4c
+  - enabled: 1
+    path: Assets/Scenes/TennisGameplay.unity
+    guid: e36a22ed2866cbc4fbcde336c3869fca
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 15319f934223da9428fc6cfb3a0cfbdc, type: 2}

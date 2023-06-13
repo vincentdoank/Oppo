@@ -132,7 +132,7 @@ public class ContentController : MonoBehaviour
 
     public void DownloadAssets()
     {
-        DownloadContent.Instance.RequestLogin("ssssss111", "ssssssaaaaaaaaasssaa", () => DownloadContent.Instance.RequestToken(() => StartCoroutine(DownloadContent.Instance.RequestContent(LoadLocalAssets))));
+        //DownloadContent.Instance.RequestLogin("ssssss111", "ssssssaaaaaaaaasssaa", () => DownloadContent.Instance.RequestToken(() => StartCoroutine(DownloadContent.Instance.RequestContent(LoadLocalAssets))));
         //DownloadContent.Instance.LoadFromTextAsset(LoadLocalAssets);
     }
 

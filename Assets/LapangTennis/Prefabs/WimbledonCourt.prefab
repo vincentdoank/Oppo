@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3673435888446102720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4157238994048910970}
+  - component: {fileID: 1017427877261412831}
+  - component: {fileID: 3024824702338071829}
+  m_Layer: 0
+  m_Name: WimbledonCourt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4157238994048910970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3673435888446102720}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &1017427877261412831
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3673435888446102720}
+  m_Mesh: {fileID: 3308666403573543221, guid: 9793a386414ee44b5b868949b0ba8539, type: 3}
+--- !u!23 &3024824702338071829
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3673435888446102720}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e7a08bfe8825d4cd4bead4583a735663, type: 2}
+  - {fileID: 2100000, guid: 6d3f401fd074d4fb9b9fae82a04bbd56, type: 2}
+  - {fileID: 2100000, guid: 2dd8f1392813b42758aa328071907a00, type: 2}
+  - {fileID: 2100000, guid: 8ad6e25e716dc475aaaf684945ec9984, type: 2}
+  - {fileID: 2100000, guid: 4335821bec2474ab4957a5f2f048d69b, type: 2}
+  - {fileID: 2100000, guid: 9a10bfcb7b9844ab3932fe2c366a5574, type: 2}
+  - {fileID: 2100000, guid: 55d91e07c8d444ce1a70b61f33ba3b21, type: 2}
+  - {fileID: 2100000, guid: 0c2c2077e75f74e259ce535740212bb1, type: 2}
+  - {fileID: 2100000, guid: f72592a19556049529f66e7297e6e764, type: 2}
+  - {fileID: 2100000, guid: d8111b3ae043542d781757e7b81528a1, type: 2}
+  - {fileID: 2100000, guid: c649d6ddbbe8046c38ad276c3ca5cafe, type: 2}
+  - {fileID: 2100000, guid: bd10cc96166904d5282639316b0946bb, type: 2}
+  - {fileID: 2100000, guid: 59410fcf8120a4996aca3f263d88277b, type: 2}
+  - {fileID: 2100000, guid: 4de037ab385284baab21b51bf2fd8080, type: 2}
+  - {fileID: 2100000, guid: 1411580afdd734d7a92a90175e0346fe, type: 2}
+  - {fileID: 2100000, guid: 1a4387cd0ec594ee9886e27f6f47849a, type: 2}
+  - {fileID: 2100000, guid: 4d4e4f52057ac453c8cd9e587b06a994, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}

@@ -26,6 +26,11 @@ public class EventManager : MonoBehaviour
     public static Action<ulong, Vector3, Vector3> onFootballUpdated;
     public static Action onPhotoCaptured;
 
+    public static Action<ulong, Vector3> onPlayer1PositionUpdated;
+    public static Action<ulong, Vector3> onPlayer2PositionUpdated;
+    public static Action<ulong, string> onPlayer1AnimationPlayed;
+    public static Action<ulong, string> onPlayer2AnimationPlayed;
+    
     public static Action onUseCameraSelected;
     public static Action<ulong, bool> onStrikerSelected;
     public static Action<ulong, bool> onGoalKeeperSelected;
@@ -34,6 +39,7 @@ public class EventManager : MonoBehaviour
     public static Action<ulong> onNextRoundStarted;
     public static Action<ulong, int, int> onScoreUpdated;
     public static Action<FootballPlayerData> onFootballDataSent;
+    public static Action<TennisPlayerData> onTennisDataSent;
     public static Action<ulong> onResetMatchStarted;
     public static Action<ulong, int> onPartOfDayChanged;
     public static Action<ulong, int> onWeatherChanged;

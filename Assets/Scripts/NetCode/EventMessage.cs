@@ -50,6 +50,12 @@ namespace WTI.NetCode
         private const byte CATCH_BALL_EVENT_CODE = 18;
         private const byte SHOOT_POSITION_EVENT_CODE = 19;
 
+
+        private const byte PLAYER1_POSITION_EVENT_CODE = 20;
+        private const byte PLAYER2_POSITION_EVENT_CODE = 21;
+        private const byte PLAYER1_ANIMATION_EVENT_CODE = 22;
+        private const byte PLAYER2_ANIMATION_EVENT_CODE = 23;
+
         private const byte DISCONNECT_EVENT_CODE = 00;
 
         public enum TargetMessage
@@ -87,6 +93,11 @@ namespace WTI.NetCode
             EventManager.onBallPositionResetted += SendBallReset;
             EventManager.onBallCaught += SendCatchBall;
             EventManager.onBallShot += SendShootPosition;
+
+            EventManager.onPlayer1PositionUpdated += SendPlayer1Position;
+            EventManager.onPlayer2PositionUpdated += SendPlayer2Position;
+            EventManager.onPlayer1AnimationPlayed += SendPlayer1Animation;
+            EventManager.onPlayer2AnimationPlayed += SendPlayer2Animation;
 
             EventManager.onOtherPlayerDisconnected += SendOtherPlayerDisconnectedStat;
         }
@@ -756,6 +767,122 @@ namespace WTI.NetCode
             }
         }
 
+        private void SendPlayer1Position(ulong senderClientId, Vector3 position)
+        {
+            Debug.Log("SendPlayer1Position");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(PLAYER1_POSITION_EVENT_CODE);
+                writer.WriteValueSafe(position);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
+        private void SendPlayer2Position(ulong senderClientId, Vector3 position)
+        {
+            Debug.Log("SendPlayer2Position");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(PLAYER2_POSITION_EVENT_CODE);
+                writer.WriteValueSafe(position);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
+        private void SendPlayer1Animation(ulong senderClientId, string animationName)
+        {
+            Debug.Log("SendShootPosition");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(PLAYER1_ANIMATION_EVENT_CODE);
+                writer.WriteValueSafe(animationName);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
+        private void SendPlayer2Animation(ulong senderClientId, string animationName)
+        {
+            Debug.Log("SendShootPosition");
+            var writer = new FastBufferWriter(1100, Allocator.Temp);
+            var customMessagingManager = NetworkManager.CustomMessagingManager;
+            using (writer)
+            {
+                // Write our message type
+                writer.WriteValueSafe(PLAYER2_ANIMATION_EVENT_CODE);
+                writer.WriteValueSafe(animationName);
+
+                if (IsServer)
+                {
+                    List<ulong> clientsIds = new List<ulong>();
+                    clientsIds.AddRange((List<ulong>)NetworkManager.ConnectedClientsIds);
+                    clientsIds.Remove(senderClientId);
+                    customMessagingManager.SendUnnamedMessage(clientsIds, writer);
+                }
+                else
+                {
+                    if (NetworkManager.IsConnectedClient)
+                    {
+                        // This method can be used by a client or server (client to server or server to client)
+                        customMessagingManager.SendUnnamedMessage(NetworkManager.ServerClientId, writer);
+                    }
+                }
+            }
+        }
+
         private void SendOtherPlayerDisconnectedStat(ulong senderClientId, ulong clientId)
         {
             NetworkController.Instance.errorMessage = "SendOtherPlayerDisconnectedStat";
@@ -859,6 +986,19 @@ namespace WTI.NetCode
                 case SHOOT_POSITION_EVENT_CODE:
                     OnReceivedShootPositionEventMessage(clientId, reader);
                     break;
+                case PLAYER1_POSITION_EVENT_CODE:
+                    OnReceivedPlayer1PositionEventMessage(clientId, reader);
+                    break;
+                case PLAYER2_POSITION_EVENT_CODE:
+                    OnReceivedPlayer2PositionEventMessage(clientId, reader);
+                    break;
+                case PLAYER1_ANIMATION_EVENT_CODE:
+                    OnReceivedPlayer1AnimationEventMessage(clientId, reader);
+                    break;
+                case PLAYER2_ANIMATION_EVENT_CODE:
+                    OnReceivedPlayer2AnimationEventMessage(clientId, reader);
+                    break;
+
                 case DISCONNECT_EVENT_CODE:
                     OnReceivedOtherPlayerDisconnectedEventMessage(clientId, reader);
                     break;
@@ -1107,7 +1247,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedCatchBallEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedCatchBallEventMessage message");
+            Debug.Log("OnReceivedCatchBallEventMessage");
             if (IsServer)
             {
                 SendCatchBall(client);
@@ -1117,7 +1257,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedShootPositionEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedShootPosiitonEventMessage message");
+            Debug.Log("OnReceivedShootPosiitonEventMessage");
 
             reader.ReadValueSafe(out Vector3 position);
 
@@ -1126,6 +1266,58 @@ namespace WTI.NetCode
             //    SendShootPosition(client, position);
             //}
             OnBallShot(position);
+        }
+
+        protected void OnReceivedPlayer1PositionEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedPlayer1PositionEventMessage");
+
+            reader.ReadValueSafe(out Vector3 position);
+
+            if (IsServer)
+            {
+                SendPlayer1Position(client, position);
+            }
+            OnPlayer1PositionUpdated(position);
+        }
+
+        protected void OnReceivedPlayer2PositionEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedPlayer2PositionEventMessage");
+
+            reader.ReadValueSafe(out Vector3 position);
+
+            if (IsServer)
+            {
+                SendPlayer2Position(client, position);
+            }
+            OnPlayer2PositionUpdated(position);
+        }
+
+        protected void OnReceivedPlayer1AnimationEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedPlayer1AnimationEventMessage message");
+
+            reader.ReadValueSafe(out string animationName);
+
+            if (IsServer)
+            {
+                SendPlayer1Animation(client, animationName);
+            }
+            OnPlayer1AnimationUpdated(animationName);
+        }
+
+        protected void OnReceivedPlayer2AnimationEventMessage(ulong client, FastBufferReader reader)
+        {
+            Debug.Log("OnReceivedPlayer2AnimationEventMessage message");
+
+            reader.ReadValueSafe(out string animationName);
+
+            if (IsServer)
+            {
+                SendPlayer2Animation(client, animationName);
+            }
+            OnPlayer2AnimationUpdated(animationName);
         }
 
         protected void OnReceivedOtherPlayerDisconnectedEventMessage(ulong clientid, FastBufferReader reader)
@@ -1256,6 +1448,25 @@ namespace WTI.NetCode
         private void OnBallShot(Vector3 position)
         {
             FootballController.Instance.OnBallShot(position);    
+        }
+
+        private void OnPlayer1PositionUpdated(Vector3 position)
+        {
+            TennisGameController.Instance.OnPlayer1PositionUpdated(position);
+        }
+
+        private void OnPlayer2PositionUpdated(Vector3 position)
+        {
+            TennisGameController.Instance.OnPlayer2PositionUpdated(position);
+        }
+
+        private void OnPlayer1AnimationUpdated(string animationName)
+        {
+            TennisGameController.Instance.OnPlayer1AnimationUpdated(animationName);
+        }
+        private void OnPlayer2AnimationUpdated(string animationName)
+        {
+            TennisGameController.Instance.OnPlayer2AnimationUpdated(animationName);
         }
 
         private void OnOtherPlayerDisconnected(ulong clientId)

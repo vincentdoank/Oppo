@@ -55,7 +55,7 @@ namespace WTI.NetCode
 
             yield return null;
             
-            EventManager.onConnectToNetwork += Connect;
+            //EventManager.onConnectToNetwork += Connect;
             EventManager.onLeaveRoom += ExitRoom;
 
             Connect();

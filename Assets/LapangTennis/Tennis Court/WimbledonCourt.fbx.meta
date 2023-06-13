@@ -1,0 +1,306 @@
+fileFormatVersion: 2
+guid: 9793a386414ee44b5b868949b0ba8539
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AsphaltBaseShader
+    second: {fileID: 2100000, guid: 9a10bfcb7b9844ab3932fe2c366a5574, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BlackCordShader
+    second: {fileID: 2100000, guid: 1411580afdd734d7a92a90175e0346fe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: FabricShader
+    second: {fileID: 2100000, guid: 4de037ab385284baab21b51bf2fd8080, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GlassShader
+    second: {fileID: 2100000, guid: 6d3f401fd074d4fb9b9fae82a04bbd56, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GlassWindows
+    second: {fileID: 2100000, guid: 0c2c2077e75f74e259ce535740212bb1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GrassShader
+    second: {fileID: 2100000, guid: e7a08bfe8825d4cd4bead4583a735663, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: NettingShader
+    second: {fileID: 2100000, guid: 1a4387cd0ec594ee9886e27f6f47849a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RetractableRoofShader
+    second: {fileID: 2100000, guid: 8ad6e25e716dc475aaaf684945ec9984, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoofTopPartsShader
+    second: {fileID: 2100000, guid: d8111b3ae043542d781757e7b81528a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoofTopShaderShader
+    second: {fileID: 2100000, guid: c649d6ddbbe8046c38ad276c3ca5cafe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoofUnderShader
+    second: {fileID: 2100000, guid: f72592a19556049529f66e7297e6e764, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ScoreboardShader
+    second: {fileID: 2100000, guid: bd10cc96166904d5282639316b0946bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SeatShader
+    second: {fileID: 2100000, guid: 4335821bec2474ab4957a5f2f048d69b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StadiumPartsShader
+    second: {fileID: 2100000, guid: 55d91e07c8d444ce1a70b61f33ba3b21, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TennisPropsShader
+    second: {fileID: 2100000, guid: 59410fcf8120a4996aca3f263d88277b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WhiteChalkDustShader
+    second: {fileID: 2100000, guid: 4d4e4f52057ac453c8cd9e587b06a994, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WhiteMetalSub
+    second: {fileID: 2100000, guid: 2dd8f1392813b42758aa328071907a00, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: AsphaltBaseShader_baseColor
+    second: {fileID: 2800000, guid: 96de270283f094030b9df2e2de6d1181, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: AsphaltBaseShader_normal
+    second: {fileID: 2800000, guid: 2605ccbbf1dc54daf8a20315cd905778, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: FabricShader_baseColor
+    second: {fileID: 2800000, guid: b77e0853ee5d54c4d9d474e7113515ab, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: GlassWindows_baseColor
+    second: {fileID: 2800000, guid: 93f34257040d844a1ac59ee97a6db6cc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: GlassWindows_normal
+    second: {fileID: 2800000, guid: fcb0b8a21c1454b61903f2b6368f123d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: GrassShader_baseColor
+    second: {fileID: 2800000, guid: 753e61371b8c34841bb82f351be39181, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: NettingShader_baseColor
+    second: {fileID: 2800000, guid: 5f7b761872a9b4582a0cd565aaf9b00c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: NettingShader_normal
+    second: {fileID: 2800000, guid: acf8ee26e29c349dca9b7b105fb8ab35, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RetractableRoofShader_baseColor
+    second: {fileID: 2800000, guid: e9e7deda7ddf243caa2daf8061758cd1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RetractableRoofShader_normal
+    second: {fileID: 2800000, guid: d54311b08dd654091bcd64daf7a2b6e7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofTopPartsShader_baseColor
+    second: {fileID: 2800000, guid: d822f290788c4424eb46785acad728a9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofTopPartsShader_normal
+    second: {fileID: 2800000, guid: caa28055fe065493e8887b29124901ce, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofTopShaderShader_baseColor
+    second: {fileID: 2800000, guid: 5db3f7e27b4c24b8cb66151677cb42d3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofTopShaderShader_normal
+    second: {fileID: 2800000, guid: 4c52bbae6c63c491f9894dfdfe17484b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofUnderShader_baseColor
+    second: {fileID: 2800000, guid: 550b9a5f07a6e4b189174567eb46b428, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RoofUnderShader_normal
+    second: {fileID: 2800000, guid: f6d1b61dfb95344b6bff2370b3334443, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ScoreboardShader_baseColor
+    second: {fileID: 2800000, guid: 5eae09c219a6b4e39a01c5e488fb1c86, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: SeatShader_baseColor
+    second: {fileID: 2800000, guid: 0e08b1e4adc894c40bc4b1405666ea88, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: SeatShader_emissive
+    second: {fileID: 2800000, guid: 0883b094b5b6946f3ab7c7ed0cf97d16, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: StadiumPartsShader_baseColor
+    second: {fileID: 2800000, guid: 1ec3e4cb5d8e74fa38f16a53b3985cfa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: StadiumPartsShader_normal
+    second: {fileID: 2800000, guid: 3184907f0ae504569a30d05cf384be11, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TennisPropsShader_baseColor
+    second: {fileID: 2800000, guid: eb53ec668aff84f82bfd5d6cc5fc5ef9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TennisPropsShader_normal
+    second: {fileID: 2800000, guid: fd0b299e4a1884a3593c2556a8f7d2ea, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
