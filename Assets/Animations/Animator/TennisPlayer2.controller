@@ -190,7 +190,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Serve
+    m_ConditionEvent: Shoot
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4036634000819494144}
@@ -264,7 +264,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TennisPlayer
+  m_Name: TennisPlayer2
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Acceleration
@@ -297,7 +297,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Serve
+  - m_Name: Shoot
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -400,7 +400,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Rig_Pemain_Tennis|| 03_ Forehand
-  m_Speed: 1
+  m_Speed: 3
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7556271935952873209}
@@ -440,7 +440,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -2912672235651121403, guid: 6c9d3da752a838b4f8fd2cb929370541, type: 3}
+  m_Motion: {fileID: 7400000, guid: 43cb70a93931c49489e60ecd2dcfd752, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -498,7 +498,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Rig_Pemain_Tennis|| 06_ Backhand
-  m_Speed: 1
+  m_Speed: 3
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 39353358005055341}
@@ -531,25 +531,25 @@ AnimatorStateMachine:
     m_Position: {x: 341.7603, y: 16.41632, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4036634000819494144}
-    m_Position: {x: 550, y: 80, z: 0}
+    m_Position: {x: 600, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3659801551665617096}
-    m_Position: {x: 540, y: 160, z: 0}
+    m_Position: {x: 550, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6400045330438987925}
-    m_Position: {x: 500, y: 250, z: 0}
+    m_Position: {x: 410, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 944437785721117547}
-    m_Position: {x: 410, y: 350, z: 0}
+    m_Position: {x: 280, y: 420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 863796244180554715}
-    m_Position: {x: 350, y: 450, z: 0}
+    m_Position: {x: 140, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1835026313660845324}
-    m_Position: {x: 420, y: -120, z: 0}
+    m_Position: {x: 560, y: -190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8881007091941284758}
-    m_Position: {x: 120, y: -120, z: 0}
+    m_Position: {x: 200, y: -210, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -4706208097059668434}

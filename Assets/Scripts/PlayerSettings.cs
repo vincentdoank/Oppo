@@ -36,33 +36,33 @@ public class PlayerSettings : MonoBehaviour
     public void SetPlayerName(string player1Name, string player2Name)
     {
         Debug.Log("name : " + player1Name + " " + player2Name);
-        FootballController.Instance.scoreController.ChangePlayer1Name(player1Name);
-        FootballController.Instance.scoreController.ChangePlayer2Name(player2Name);
+        ((FootballController)GameMatchController.Instance).scoreController.ChangePlayer1Name(player1Name);
+        ((FootballController)GameMatchController.Instance).scoreController.ChangePlayer2Name(player2Name);
     }
 
     public void SetPlayerNameSprite(Texture2D texture)
     {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f, 100, 1, SpriteMeshType.FullRect, new Vector4(60, 60, 60, 60));
-        FootballController.Instance.scoreController.ChangePlayer1NameBackground(sprite);
-        FootballController.Instance.scoreController.ChangePlayer2NameBackground(sprite);
+        ((FootballController)GameMatchController.Instance).scoreController.ChangePlayer1NameBackground(sprite);
+        ((FootballController)GameMatchController.Instance).scoreController.ChangePlayer2NameBackground(sprite);
     }
 
     public void SetScoreContainerSprite(Texture2D texture)
     {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f, 100, 1, SpriteMeshType.FullRect, new Vector4(50, 50, 50, 50));
-        FootballController.Instance.scoreController.ChangeScoreBackground(sprite);
+        ((FootballController)GameMatchController.Instance).scoreController.ChangeScoreBackground(sprite);
     }
 
     public void SetScoreOnSprite(Texture2D texture)
     {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-        FootballController.Instance.scoreController.scoreSprite = sprite;
+        ((FootballController)GameMatchController.Instance).scoreController.scoreSprite = sprite;
     }
 
     public void SetScoreOffSprite(Texture2D texture)
     {
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-        FootballController.Instance.scoreController.missSprite = sprite;
+        ((FootballController)GameMatchController.Instance).scoreController.missSprite = sprite;
     }
 
     public void SetBallTexture(Texture2D texture)

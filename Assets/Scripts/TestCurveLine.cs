@@ -65,7 +65,7 @@ public class TestCurveLine : MonoBehaviour
         {
             Reset();
             Vector3 mousePos = Input.mousePosition;
-            Ray ray = FootballController.Instance.strikerCamera.ScreenPointToRay(mousePos);
+            Ray ray = ((FootballController)GameMatchController.Instance).strikerCamera.ScreenPointToRay(mousePos);
             RaycastHit[] raycastHits = Physics.RaycastAll(ray, 200f, shootLayerMask);
             for (int i = 0; i < raycastHits.Length; i++)
             {
@@ -83,7 +83,7 @@ public class TestCurveLine : MonoBehaviour
             if (intervalElapsedTime >= interval && canDrawLine)
             {
                 Vector3 mousePos = Input.mousePosition;
-                Ray ray = FootballController.Instance.strikerCamera.ScreenPointToRay(mousePos);
+                Ray ray = ((FootballController)GameMatchController.Instance).strikerCamera.ScreenPointToRay(mousePos);
                 RaycastHit[] raycastHits = Physics.RaycastAll(ray, 200f, shootLayerMask);
                 for (int i = 0; i < raycastHits.Length; i++)
                 {

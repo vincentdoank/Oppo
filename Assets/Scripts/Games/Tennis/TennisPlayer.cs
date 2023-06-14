@@ -8,6 +8,8 @@ public class TennisPlayer : Player
     public TennisGameController.PlayerType controlType;
     public float minX, maxX;
     public float moveSpeed;
+    public Transform servedBall;
+
     private Vector3 acceleration;
     private new Animator animator;
 
@@ -44,8 +46,8 @@ public class TennisPlayer : Player
 
     private void LateUpdate()
     {
-        if ((TennisGameController.Instance.playerType == TennisGameController.PlayerType.Player1 && controlType == TennisGameController.PlayerType.Player1 && TennisGameController.Instance.player1 == this) ||
-            (TennisGameController.Instance.playerType == TennisGameController.PlayerType.Player2 && controlType == TennisGameController.PlayerType.Player2 && TennisGameController.Instance.player2 == this))
+        if ((((TennisGameController)(GameMatchController.Instance)).playerType == TennisGameController.PlayerType.Player1 && controlType == TennisGameController.PlayerType.Player1 && ((TennisGameController)(GameMatchController.Instance)).player1 == this) ||
+            (((TennisGameController)(GameMatchController.Instance)).playerType == TennisGameController.PlayerType.Player2 && controlType == TennisGameController.PlayerType.Player2 && ((TennisGameController)(GameMatchController.Instance)).player2 == this))
         {
             Vector2 offset = new Vector2((maxX + minX) / 2, 0);
             Vector3 targetPos = transform.position;
@@ -88,5 +90,12 @@ public class TennisPlayer : Player
         //{
         //    EventManager.onPlayer2PositionUpdated?.Invoke(GameManager.Instance.GetClientId(), position);
         //}
+    }
+
+    public void OnServeHit()
+    {
+        GameMatchController.Instance.ball.SetPosition(servedBall.position);
+        GameMatchController.Instance.ball.Shoot(Vector3.forward * 20f, Random.Range(-2, 2));
+        GameMatchController.Instance.ball.gameObject.SetActive(true);
     }
 }

@@ -110,7 +110,7 @@ public class LineBrush : SimplePooling
                 prePositionList.Add(worldPos);
                 //positionList.Add(worldPos);
 
-                ParticleSystem touchEffect = FootballController.Instance.touchEffect;
+                ParticleSystem touchEffect = ((FootballController)GameMatchController.Instance).touchEffect;
                 touchEffect.transform.position = worldPos;
                 touchEffect.Play();
 
@@ -136,7 +136,7 @@ public class LineBrush : SimplePooling
                         //lineList[lineList.Count - 1].SetPosition(lineList[lineList.Count - 1].positionCount - 1, worldPos);
 
                         //positionList.Add(worldPos);
-                        Transform touchEffect = FootballController.Instance.touchEffect.transform;
+                        Transform touchEffect = ((FootballController)GameMatchController.Instance).touchEffect.transform;
                         touchEffect.position = worldPos;
                     }
                 }
@@ -153,7 +153,7 @@ public class LineBrush : SimplePooling
                 isTouchReleased = true;
                 positionList = null;
                 prePositionList.Clear();
-                FootballController.Instance.touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                ((FootballController)GameMatchController.Instance).touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             }
 
             //if (isTouchReleased)

@@ -14,25 +14,25 @@ public class Goal : MonoBehaviour
 
     private void ScoreGoal()
     {
-        if (!FootballController.Instance.isBallSaved)
+        if (!((FootballController)GameMatchController.Instance).isBallSaved)
         {
-            FootballController.Instance.matchDataList.Add(new MatchData { match = FootballController.Instance.scoreController.GetRound(), winnerId = (int)ScoreController.Player.player1 });
-            FootballController.Instance.scoreController.AddScore(ScoreController.Player.player1);
-            //FootballController.Instance.NextMatch();
+            ((FootballController)GameMatchController.Instance).matchDataList.Add(new MatchData { match = ((FootballController)GameMatchController.Instance).scoreController.GetRound(), winnerId = (int)ScoreController.Player.player1 });
+            ((FootballController)GameMatchController.Instance).scoreController.AddScore(ScoreController.Player.player1);
+            //((FootballController)GameMatchController.Instance).NextMatch();
             Debug.Log("clientdId : " + GameManager.Instance.GetClientId());
-            Debug.Log("get player 1 score : " + FootballController.Instance.scoreController.GetPlayer1Score());
+            Debug.Log("get player 1 score : " + ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score());
 
             FootballPlayerData data = new FootballPlayerData
             {
-                isStrikerSelected = FootballController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
-                isGoalKeeperSelected = FootballController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
-                p1Score = FootballController.Instance.scoreController.GetPlayer1Score(),
-                p2Score = FootballController.Instance.scoreController.GetPlayer2Score(),
-                matchDataList = FootballController.Instance.matchDataList
+                isStrikerSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
+                isGoalKeeperSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
+                p1Score = GameMatchController.Instance.scoreController.GetPlayer1Score(),
+                p2Score = GameMatchController.Instance.scoreController.GetPlayer2Score(),
+                matchDataList = ((FootballController)GameMatchController.Instance).matchDataList
             };
             EventManager.onFootballDataSent?.Invoke(data);
 
-            //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), FootballController.Instance.scoreController.GetPlayer1Score(), FootballController.Instance.scoreController.GetPlayer2Score());
+            //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer2Score());
         }
     }
 }

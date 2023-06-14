@@ -21,31 +21,22 @@ public class MatchData
     public int winnerId; //based on ScoreController.Player ( -1 for none )
 }
 
-public class FootballController : MonoBehaviour
+public class FootballController : GameMatchController
 {
-    public Button strikerButton;
-    public Button goalKeeperButton;
 
     public Camera strikerCamera;
     public Camera goalKeeperCamera;
-    public Camera screenCamera;
 
     public GoalKeeper goalKeeper;
     public Striker striker;
-    public Ball ball;
     public Transform goal;
-    public GameObject missArea;
+    public GameObject[] missAreas;
     public SwipeController swipeController;
     public Image goalImage;
     public Image missImage;
     public Image saveImage;
 
-    public Weather weather;
-    public Locator locator;
-
     public ParticleSystem touchEffect;
-    public SkyController skyController;
-    public ScoreController scoreController;
     public ScoreController screenScoreController;
     public TweenFade transitionAnim;
     public List<MatchData> matchDataList = new List<MatchData>();
@@ -60,20 +51,13 @@ public class FootballController : MonoBehaviour
 
     public PlayerType playerType = PlayerType.None;
     public bool isBallSaved = false;
-    public bool isStarted = false;
 
     private float shootTimer = 4f;
     private float elapsedTime;
 
-
-    public Dictionary<ulong, int> clientsRoleDict = new Dictionary<ulong, int>();
-
-    public static FootballController Instance { get; private set; }
-
-    private void Start()
+    protected override void Start()
     {
-        Instance = this;
-
+        base.Start();
         Debug.LogWarning("runtime : " + Application.platform);
         if (Application.platform != RuntimePlatform.Android)
         {
@@ -86,9 +70,6 @@ public class FootballController : MonoBehaviour
             screenScoreController.gameObject.SetActive(false);
             scoreController.gameObject.SetActive(true);
         }
-
-        strikerButton.onClick.AddListener(OnStrikerSelected);
-        goalKeeperButton.onClick.AddListener(OnGoalKeeperSelected);
 
         elapsedTime = 0;
         //scoreController.time.SetTime(10, ForwardShoot);
@@ -116,8 +97,8 @@ public class FootballController : MonoBehaviour
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
         //OnGoalKeeperSelected();
-        //OnStrikerSelected();
-        OnDrawLineSelected();
+        OnStrikerSelected();
+        //OnDrawLineSelected();
 #else
         screenCamera.gameObject.SetActive(true);
 #endif
@@ -126,46 +107,27 @@ public class FootballController : MonoBehaviour
         CheckWeather();
     }
 
-    private void CheckWeather()
-    {
-        //if (playerType == PlayerType.Striker)
-        //{
-        //    StartCoroutine(GetWeatherData());
-        //}
-    }
-
-    private IEnumerator GetWeatherData()
-    {
-        float lati = 0f;
-        float longi = 0f;
-        Weather.WeatherType weatherType = Weather.WeatherType.Clear;
-        yield return locator.GetLatitudeLongitude((latitude, longitude) => { lati = latitude; longi = longitude; });
-        yield return weather.RequestWeather(lati, longi, (weather) => { weatherType = weather; });
-        Debug.LogWarning("Get Weather data : " + weatherType);
-        skyController.CheckCurrentTimeWeather(weatherType);
-    }
-
     private void OnDestroy()
     {
         EventManager.onStrikerSelected -= OnStrikerSelected;
         EventManager.onGoalKeeperSelected -= OnGoalKeeperSelected;
     }
 
-    public void StartMatch()
-    {
-        isStarted = true;
-        CheckWeather();
-        if (GameManager.Instance.IsServer)
-        {
-            Debug.Log("Start Match");
-            scoreController.time.SetTime(10, () =>
-            {
-                ForwardShoot();
-                EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
-            });
-            EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
-        }
-    }
+    //public void StartMatch()
+    //{
+    //    isStarted = true;
+    //    CheckWeather();
+    //    if (GameManager.Instance.IsServer)
+    //    {
+    //        Debug.Log("Start Match");
+    //        scoreController.time.SetTime(10, () =>
+    //        {
+    //            ForwardShoot();
+    //            EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
+    //        });
+    //        EventManager.onShootTimerStarted?.Invoke(GameManager.Instance.GetClientId());
+    //    }
+    //}
 
     public void PlayGoalAnimation()
     {
@@ -235,14 +197,6 @@ public class FootballController : MonoBehaviour
         OnGoalKeeperSelected(GetClientIdByRole(PlayerType.GoalKeeper), isGoalKeeperSelected);
     }
 
-    public void CheckState()
-    {
-        if (GameManager.Instance.IsServer)
-        {
-            CheckState(!strikerButton.interactable, !goalKeeperButton.interactable, scoreController.time.GetCurrentTime(), scoreController.GetPlayer1Score(), scoreController.GetPlayer2Score());
-        }
-    }
-
     private void OnStrikerSelected()
     {
         playerType = PlayerType.Striker;
@@ -287,6 +241,12 @@ public class FootballController : MonoBehaviour
     public void Shoot()
     {
         striker.PlayShootAnimation();
+    }
+
+
+    protected override void AutoShoot()
+    {
+        ForwardShoot();
     }
 
     public void ForwardShoot()
@@ -426,7 +386,6 @@ public class FootballController : MonoBehaviour
 
     public void OnStrikerSelected(ulong clientId, bool isSelected)
     {
-        strikerButton.interactable = !isSelected;
         if (isSelected)
         {
             clientsRoleDict.Add(clientId, (int)PlayerType.Striker);
@@ -439,7 +398,6 @@ public class FootballController : MonoBehaviour
 
     public void OnGoalKeeperSelected(ulong clientId, bool isSelected)
     {
-        goalKeeperButton.interactable = !isSelected;
         if (isSelected)
         {
             clientsRoleDict.Add(clientId, (int)PlayerType.GoalKeeper);
@@ -487,7 +445,7 @@ public class FootballController : MonoBehaviour
         ball.SendShootPosition(position);
     }
 
-    public void OnDisconnected(ulong clientId)
+    public override void OnDisconnected(ulong clientId)
     {
         if (clientsRoleDict.ContainsKey(clientId))
         {
@@ -508,12 +466,10 @@ public class FootballController : MonoBehaviour
         }
     }
 
-    public void SendPlayerData()
+    public override void SendPlayerData()
     {
         EventManager.onFootballDataSent?.Invoke(new FootballPlayerData
         {
-            isStrikerSelected = !strikerButton.interactable,
-            isGoalKeeperSelected = !goalKeeperButton.interactable,
             shootTime = scoreController.time.GetCurrentTime(),
             p1Score = scoreController.GetPlayer1Score(),
             p2Score = scoreController.GetPlayer2Score(),
@@ -523,8 +479,6 @@ public class FootballController : MonoBehaviour
 
     public void UpdatePlayerData(FootballPlayerData data)
     {
-        strikerButton.interactable = !data.isStrikerSelected;
-        goalKeeperButton.interactable = !data.isGoalKeeperSelected;
         scoreController.SetScore(data.matchDataList, data.p1Score, data.p2Score);
         if (data.p1Score + data.p2Score >= 5)
         {
@@ -539,6 +493,9 @@ public class FootballController : MonoBehaviour
 
     public void ShowMissArea(bool value)
     {
-        missArea.SetActive(value);
+        foreach (GameObject missArea in missAreas)
+        {
+            missArea.SetActive(value);
+        }
     }
 }

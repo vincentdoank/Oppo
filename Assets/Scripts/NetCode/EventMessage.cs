@@ -1390,88 +1390,88 @@ namespace WTI.NetCode
 
         private void OnStrikerSelected(ulong clientId, bool isSelected)
         {
-            FootballController.Instance.OnStrikerSelected(clientId, isSelected);
+            ((FootballController)GameMatchController.Instance).OnStrikerSelected(clientId, isSelected);
         }
 
         private void OnGoalKeeperSelected(ulong clientId, bool isSelected)
         {
-            FootballController.Instance.OnGoalKeeperSelected(clientId, isSelected);
+            ((FootballController)GameMatchController.Instance).OnGoalKeeperSelected(clientId, isSelected);
         }
 
         private void OnShootTimerStarted()
         {
-            FootballController.Instance.StartShootTimer();
+            ((FootballController)GameMatchController.Instance).StartShootTimer();
         }
 
         private void OnShootTimerEnded()
         {
-            FootballController.Instance.ForwardShoot();
+            ((FootballController)GameMatchController.Instance).ForwardShoot();
         }
 
         private void OnNextRoundStarted()
         {
             NetworkController.Instance.errorMessage = "OnNextRoundStarted";
-            FootballController.Instance.NextRound();
+            ((FootballController)GameMatchController.Instance).NextRound();
         }
 
         private void OnFootballPlayerDataUpdated(FootballPlayerData data)
         {
-            FootballController.Instance.UpdatePlayerData(data);
+            ((FootballController)GameMatchController.Instance).UpdatePlayerData(data);
         }
 
         private void OnResetMatchStarted()
         {
             NetworkController.Instance.errorMessage = "OnNextRoundStarted";
-            FootballController.Instance.ResetMatch();
+            ((FootballController)GameMatchController.Instance).ResetMatch();
         }
 
         private void OnPartOfDayChanged(int part)
         {
-            FootballController.Instance.OnPartOfDayChanged(part);
+            ((FootballController)GameMatchController.Instance).OnPartOfDayChanged(part);
         }
 
         private void OnWeatherChanged(int weather)
         {
-            FootballController.Instance.OnWeatherChanged(weather);
+            ((FootballController)GameMatchController.Instance).OnWeatherChanged(weather);
         }
 
         private void OnBallResetted()
         {
-            FootballController.Instance.OnBallResetted();
+            ((FootballController)GameMatchController.Instance).OnBallResetted();
         }
 
         private void OnBallCaught()
         {
-            FootballController.Instance.OnBallCaught();
+            ((FootballController)GameMatchController.Instance).OnBallCaught();
         }
 
         private void OnBallShot(Vector3 position)
         {
-            FootballController.Instance.OnBallShot(position);    
+            ((FootballController)GameMatchController.Instance).OnBallShot(position);    
         }
 
         private void OnPlayer1PositionUpdated(Vector3 position)
         {
-            TennisGameController.Instance.OnPlayer1PositionUpdated(position);
+            ((TennisGameController)(GameMatchController.Instance)).OnPlayer1PositionUpdated(position);
         }
 
         private void OnPlayer2PositionUpdated(Vector3 position)
         {
-            TennisGameController.Instance.OnPlayer2PositionUpdated(position);
+            ((TennisGameController)(GameMatchController.Instance)).OnPlayer2PositionUpdated(position);
         }
 
         private void OnPlayer1AnimationUpdated(string animationName)
         {
-            TennisGameController.Instance.OnPlayer1AnimationUpdated(animationName);
+            ((TennisGameController)(GameMatchController.Instance)).OnPlayer1AnimationUpdated(animationName);
         }
         private void OnPlayer2AnimationUpdated(string animationName)
         {
-            TennisGameController.Instance.OnPlayer2AnimationUpdated(animationName);
+            ((TennisGameController)(GameMatchController.Instance)).OnPlayer2AnimationUpdated(animationName);
         }
 
         private void OnOtherPlayerDisconnected(ulong clientId)
         {
-            FootballController.Instance.OnDisconnected(clientId);
+            ((FootballController)GameMatchController.Instance).OnDisconnected(clientId);
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Striker : Player
 {
     public Ball ball;
+    public Transform ballPlaceholder;
     public SwipeController swipeController;
 
     private Vector3 shootPosition;
@@ -22,21 +23,23 @@ public class Striker : Player
 
     public void PlayShootAnimation(Vector3 shootPosition)
     {
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
         {
             EventManager.onShootAnimationPlayed?.Invoke(GameManager.Instance.GetClientId());
         }
-        FootballController.Instance.swipeController.CanSwipe(false);
-        FootballController.Instance.scoreController.time.Pause(true);
+        ((FootballController)GameMatchController.Instance).swipeController.CanSwipe(false);
+        ((FootballController)GameMatchController.Instance).scoreController.time.Pause(true);
         this.shootPosition = shootPosition;
         animator.SetTrigger("Shoot");
+        Debug.LogWarning("play shoot animation : " + shootPosition);
     }
 
     public void PlayShootAnimation()
     {
         Debug.Log("animator : " + animator);
-        FootballController.Instance.scoreController.time.Pause(true);
+        ((FootballController)GameMatchController.Instance).scoreController.time.Pause(true);
         animator.SetTrigger("Shoot");
+        Debug.LogWarning("play shoot animation");
     }
 
     //protected override void Update()
@@ -51,11 +54,11 @@ public class Striker : Player
     protected override void DoAction()
     {
         base.DoAction();
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
         {
             //Debug.Log("striker do action");
             Vector2 offset = Random.insideUnitCircle * 6f;
-            shootPosition = FootballController.Instance.goal.position + (Vector3)offset;
+            shootPosition = ((FootballController)GameMatchController.Instance).goal.position + (Vector3)offset;
             PlayShootAnimation(shootPosition);
         }
     }
@@ -71,10 +74,17 @@ public class Striker : Player
         ball.Shoot(shootPosition);
     }
 
+    public void Serve()
+    {
+        ball.gameObject.SetActive(true);
+        ball.transform.position = ballPlaceholder.position;
+        ball.Shoot(shootPosition);
+    }
+
     //private void OnGUI()
     //{
     //    GUIStyle style = new GUIStyle();
     //    style.normal.textColor = Color.blue;
-    //    GUI.Label(new Rect(60, 300, 200, 60), FootballController.Instance.playerType.ToString(), style);
+    //    GUI.Label(new Rect(60, 300, 200, 60), ((FootballController)GameMatchController.Instance).playerType.ToString(), style);
     //}
 }

@@ -179,9 +179,9 @@ namespace WTI.NetCode
         {
             Debug.Log("server started");
             //GameManager.Instance.ShowExitRoomButton();
-            //FootballController.Instance.ApplyRole();
+            //((FootballController)GameMatchController.Instance).ApplyRole();
 
-            FootballController.Instance.SendPlayerData();
+            //((FootballController)GameMatchController.Instance).SendPlayerData();
         }
 
         public void OnConnected(ulong clientId)
@@ -192,17 +192,17 @@ namespace WTI.NetCode
                 //GameManager.Instance.ShowExitRoomButton();
 
                 OnDevicePaired();
-                FootballController.Instance.CheckState();
+                //((FootballController)GameMatchController.Instance).CheckState();
             }
             else if (GameManager.Instance.IsServer)
             {
-                FootballController.Instance.SendPlayerData();
-                if (NetworkManager.Singleton.ConnectedClients.Count > 2 && !FootballController.Instance.isStarted)
+                GameMatchController.Instance.SendPlayerData();
+                if (NetworkManager.Singleton.ConnectedClients.Count > 2 && !GameMatchController.Instance.isStarted)
                 {
-                    FootballController.Instance.StartMatch();
+                    GameMatchController.Instance.StartMatch();
                 }
             }
-            //FootballController.Instance.ApplyRole();
+            //((FootballController)GameMatchController.Instance).ApplyRole();
         }
 
         public void OnDisconnected(ulong clientId)
@@ -215,7 +215,7 @@ namespace WTI.NetCode
             }
             if (NetworkManager.Singleton.IsServer)
             {
-                FootballController.Instance.OnDisconnected(clientId);
+                GameMatchController.Instance.OnDisconnected(clientId);
                 EventManager.onOtherPlayerDisconnected?.Invoke(GameManager.Instance.GetClientId(), clientId);
             }
 

@@ -35,7 +35,10 @@ public class GoalKeeper : Player
         animator = GetComponent<Animator>();
         EventManager.onCalibrate += Calibrate;
         canCatch = true;
-        rig.weight = 0f;
+        if (rig)
+        {
+            rig.weight = 0f;
+        }
     }
 
     private void OnDestroy()
@@ -47,7 +50,7 @@ public class GoalKeeper : Player
     protected override void Update()
     {
         base.Update();
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             if (Application.platform == RuntimePlatform.Android)
             {
@@ -73,7 +76,7 @@ public class GoalKeeper : Player
 
     private void LateUpdate()
     {
-        if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && playerType == PlayerType.Human)
+        if (!GameManager.Instance.IsServer && ((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper && playerType == PlayerType.Human)
         {
             UpdateTargetPointer();
             UpdateGoalKeeper();
@@ -91,7 +94,7 @@ public class GoalKeeper : Player
     private void UpdateTargetPointer()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper)
         {
             Vector2 offset = new Vector2((maxX + minX) / 2, (maxY + minY) / 2);
 
@@ -123,7 +126,7 @@ public class GoalKeeper : Player
         handPos.y = target.position.y;
         hands.position = handPos;
 
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper)
         {
             EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, target.position);
             //Debug.LogWarning("Send GK pos");
@@ -167,19 +170,19 @@ public class GoalKeeper : Player
     {
         base.DoAction();
         //Debug.LogWarning("isPauseAI");
-        if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper && !pauseAi)
         {
             //Debug.LogWarning("goalkeeper AI");
-            Vector3 targetPos = FootballController.Instance.ball.transform.position;
+            Vector3 targetPos = ((FootballController)GameMatchController.Instance).ball.transform.position;
             Vector3 pos = goalKeeper.position;
 
-            if (targetPos.x > FootballController.Instance.goal.position.x + 5)
+            if (targetPos.x > ((FootballController)GameMatchController.Instance).goal.position.x + 5)
             {
-                targetPos.x = FootballController.Instance.goal.position.x + 5;
+                targetPos.x = ((FootballController)GameMatchController.Instance).goal.position.x + 5;
             }
-            else if (targetPos.x < FootballController.Instance.goal.position.x - 5)
+            else if (targetPos.x < ((FootballController)GameMatchController.Instance).goal.position.x - 5)
             {
-                targetPos.x = FootballController.Instance.goal.position.x - 5;
+                targetPos.x = ((FootballController)GameMatchController.Instance).goal.position.x - 5;
             }
 
             if (targetPos.x > goalKeeper.position.x + 0.08f)
@@ -240,7 +243,7 @@ public class GoalKeeper : Player
         canCatch = false;
         //Debug.Log("ball catch");
         rig.weight = 1f;
-        Vector3 ballPosition = FootballController.Instance.ball.transform.position;
+        Vector3 ballPosition = ((FootballController)GameMatchController.Instance).ball.transform.position;
         Vector3 leftHandPos = ballPosition - leftHandTarget.InverseTransformPoint(leftHandOffset);
         Vector3 rightHandPos = ballPosition - rightHandTarget.InverseTransformPoint(rightHandOffset);
 
@@ -258,12 +261,12 @@ public class GoalKeeper : Player
         leftHandTarget.position = leftHandPos;
         rightHandTarget.position = rightHandPos;
         //Vector3 centerBall = (leftHand.position + rightHand.position) / 2;
-        FootballController.Instance.ball.Catch(leftHand, rightHand);
+        ((FootballController)GameMatchController.Instance).ball.Catch(leftHand, rightHand);
         if (GameManager.Instance.IsServer)
         {
-            FootballController.Instance.ShowMissArea(false);
-            FootballController.Instance.ShowGoalArea(false);
-            FootballController.Instance.PlaySaveAnimation();
+            ((FootballController)GameMatchController.Instance).ShowMissArea(false);
+            ((FootballController)GameMatchController.Instance).ShowGoalArea(false);
+            ((FootballController)GameMatchController.Instance).PlaySaveAnimation();
             EventManager.onBallCaught?.Invoke(GameManager.Instance.GetClientId());
         }
         StartCoroutine(WaitForRelease());
@@ -282,7 +285,7 @@ public class GoalKeeper : Player
         rightHandTarget.localPosition = rightHandOffset;
         Tweener tween = DOTween.To(() => rig.weight, (weight) => { rig.weight = weight; }, 0f, 0.1f);
         tween.Play();
-        FootballController.Instance.ball.Release();
+        ((FootballController)GameMatchController.Instance).ball.Release();
     }
 
     //protected override bool CheckIdle()

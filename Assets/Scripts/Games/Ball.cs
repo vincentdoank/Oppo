@@ -9,12 +9,19 @@ public class Ball : MonoBehaviour
     private Rigidbody rigidBody;
     public Vector3 DefPos { get; private set; }
 
+    public int bounce;
+    public int maxBounce;
+
     private float smoothness = 100f;
     public bool isShooting;
     public ParticleSystem puffEffect;
 
     private Transform leftHand = null;
     private Transform rightHand = null;
+
+    public bool isEligilble = false;
+
+    public LayerMask goalLayerMask;
 
     private void Start()
     {
@@ -29,6 +36,12 @@ public class Ball : MonoBehaviour
         PlayPuffParticle();
         StartCoroutine(WaitForReset());
         EventManager.onBallPositionResetted(GameManager.Instance.GetClientId());
+        isEligilble = false;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
     }
 
     public void PlayPuffParticle()
@@ -65,7 +78,7 @@ public class Ball : MonoBehaviour
             rigidBody.isKinematic = false;
             leftHand = null;
             rightHand = null;
-            rigidBody.AddForce(FootballController.Instance.goalKeeper.transform.forward * 3f, ForceMode.Impulse);
+            rigidBody.AddForce(((FootballController)GameMatchController.Instance).goalKeeper.transform.forward * 3f, ForceMode.Impulse);
         }
     }
 
@@ -73,12 +86,13 @@ public class Ball : MonoBehaviour
     {
         Debug.LogWarning("Shoot : " + shootPosition);
         //Reset();
-        //FootballController.Instance.goalKeeper.canCatch = true;
+        //
+        //.goalKeeper.canCatch = true;
         //stopUpdate = false;
         //rigidBody.isKinematic = false;
         //isShooting = true;
-        //FootballController.Instance.scoreController.time.Pause(true);
-        if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        //((FootballController)GameMatchController.Instance).scoreController.time.Pause(true);
+        if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
         {
             EventManager.onBallShot?.Invoke(GameManager.Instance.GetClientId(), shootPosition);
             //SendShootPosition(shootPosition);
@@ -94,13 +108,13 @@ public class Ball : MonoBehaviour
         //float upForce = Random.Range(1, 7);
         //float sideForce = Random.Range(-8, 8);
         //rigidBody.AddForce(Vector3.forward * Random.Range(25, 40) + new Vector3(sideForce, upForce, 0), ForceMode.Impulse);
-        //FootballController.Instance.goal.gameObject.SetActive(true);
+        //((FootballController)GameMatchController.Instance).goal.gameObject.SetActive(true);
     }
 
     //SERVER
     public void SendShootPosition(Vector3 shootPosition)
     {
-        FootballController.Instance.goalKeeper.canCatch = true;
+        ((FootballController)GameMatchController.Instance).goalKeeper.canCatch = true;
         rigidBody.isKinematic = false;
         isShooting = true;
         Vector3 direction = shootPosition - transform.position;
@@ -110,8 +124,8 @@ public class Ball : MonoBehaviour
             upForce = Vector3.up * 6f;
         }
         rigidBody.AddForce(direction.normalized * 12f + upForce, ForceMode.Impulse);
-        FootballController.Instance.ShowGoalArea(true);
-        FootballController.Instance.ShowMissArea(true);
+        ((FootballController)GameMatchController.Instance).ShowGoalArea(true);
+        ((FootballController)GameMatchController.Instance).ShowMissArea(true);
     }
 
     public void AddForce(Vector3 force)
@@ -126,16 +140,21 @@ public class Ball : MonoBehaviour
         //Reset();
         isShooting = true;
         rigidBody.AddTorque(Vector3.forward * 3f);
-        FootballController.Instance.goalKeeper.canCatch = true;
-        FootballController.Instance.scoreController.time.Pause(true);
-        FootballController.Instance.ShowGoalArea(true);
-        FootballController.Instance.ShowMissArea(true);
+        ((FootballController)GameMatchController.Instance).goalKeeper.canCatch = true;
+        ((FootballController)GameMatchController.Instance).scoreController.time.Pause(true);
+        ((FootballController)GameMatchController.Instance).ShowGoalArea(true);
+        ((FootballController)GameMatchController.Instance).ShowMissArea(true);
+    }
+
+    public void Shoot(Vector3 force, float randomize)
+    {
+        rigidBody.AddForce(new Vector3(force.x + randomize, force.y, force.z), ForceMode.Impulse);
     }
 
     private void Update()
     {
-        //if (!GameManager.Instance.IsServer && FootballController.Instance.playerType == FootballController.PlayerType.Striker)
-        //if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+        //if (!GameManager.Instance.IsServer && ((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
+        //if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
         if(GameManager.Instance.IsServer)
         {
             //rigidBody.isKinematic = false;
@@ -149,11 +168,11 @@ public class Ball : MonoBehaviour
         if (rigidBody.isKinematic && leftHand != null && rightHand != null)
         {
             Vector3 centerPoint = (leftHand.position + rightHand.position) / 2;
-            if (centerPoint.y > FootballController.Instance.goalKeeper.transform.position.y + 2.2f)
+            if (centerPoint.y > ((FootballController)GameMatchController.Instance).goalKeeper.transform.position.y + 2.2f)
             {
-                centerPoint.y = FootballController.Instance.goalKeeper.transform.position.y + 2.2f;
+                centerPoint.y = ((FootballController)GameMatchController.Instance).goalKeeper.transform.position.y + 2.2f;
             }
-            centerPoint.z = FootballController.Instance.goalKeeper.transform.position.z + (FootballController.Instance.goalKeeper.transform.forward * 1.2f).z;
+            centerPoint.z = ((FootballController)GameMatchController.Instance).goalKeeper.transform.position.z + (((FootballController)GameMatchController.Instance).goalKeeper.transform.forward * 1.2f).z;
             //transform.position = centerPoint;
             transform.position = Vector3.Lerp(transform.position, centerPoint, Time.deltaTime * 10f);
         }
@@ -170,5 +189,42 @@ public class Ball : MonoBehaviour
             transform.position = position;
         }
         transform.localEulerAngles = eulerAngle;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.gameObject.layer == goalLayerMask)
+        {
+            if (bounce == 0)
+            {
+                isEligilble = true;
+            }
+        }
+        
+        bounce += 1;
+
+        if (bounce == 2 && isEligilble)
+        {
+            if (!((FootballController)GameMatchController.Instance).isBallSaved)
+            {
+                ((FootballController)GameMatchController.Instance).matchDataList.Add(new MatchData { match = ((FootballController)GameMatchController.Instance).scoreController.GetRound(), winnerId = (int)ScoreController.Player.player1 });
+                ((FootballController)GameMatchController.Instance).scoreController.AddScore(ScoreController.Player.player1);
+                //((FootballController)GameMatchController.Instance).NextMatch();
+                Debug.Log("clientdId : " + GameManager.Instance.GetClientId());
+                Debug.Log("get player 1 score : " + ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score());
+
+                FootballPlayerData data = new FootballPlayerData
+                {
+                    isStrikerSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
+                    isGoalKeeperSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
+                    p1Score = GameMatchController.Instance.scoreController.GetPlayer1Score(),
+                    p2Score = GameMatchController.Instance.scoreController.GetPlayer2Score(),
+                    matchDataList = ((FootballController)GameMatchController.Instance).matchDataList
+                };
+                EventManager.onFootballDataSent?.Invoke(data);
+
+                //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer2Score());
+            }
+        }
     }
 }

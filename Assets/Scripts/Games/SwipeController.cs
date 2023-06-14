@@ -43,7 +43,7 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
 
     private void Update()
     {
-        if (!canSwipe || FootballController.Instance.playerType != FootballController.PlayerType.Striker)
+        if (!canSwipe || ((FootballController)GameMatchController.Instance).playerType != FootballController.PlayerType.Striker)
         {
             return;
         }
@@ -63,9 +63,6 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
                 swipeLineRenderer.SetPosition(1, worldPos);
 
                 fromPosition = worldPos;
-                ParticleSystem touchEffect = FootballController.Instance.touchEffect;
-                touchEffect.transform.position = worldPos;
-                touchEffect.Play();
             }
             else
             {
@@ -144,8 +141,6 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
             swipeLineRenderer.transform.position = worldPos;
             swipeLineRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction.normalized);
 
-            Transform touchEffect = FootballController.Instance.touchEffect.transform;
-            touchEffect.position = worldPos;
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -154,7 +149,6 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
             {
                 Vector3 direction = toPosition - fromPosition;
                 distance = Vector3.Distance(fromPosition, toPosition);
-                FootballController.Instance.touchEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
                 OnSwipeReleased(direction);
             }
         }
@@ -179,6 +173,7 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
 
     private void OnSwipeReleased(Vector3 direction)
     {
+        Debug.LogWarning("onReleased");
         //if (Physics.Raycast(toPosition, Vector3.forward, out RaycastHit raycastHit, 100f, goalLayerMask))
         //{
         //    GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -191,6 +186,10 @@ public class SwipeController : MonoBehaviour//, IPointerDownHandler, IPointerUpH
             //GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
             //go.transform.position = raycastHit.point;
             onSwipeCompleted?.Invoke(raycastHit.point);
+        }
+        else
+        {
+            ClearLine();
         }
     }
 }

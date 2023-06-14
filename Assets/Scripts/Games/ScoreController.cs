@@ -103,17 +103,17 @@ public class ScoreController : MonoBehaviour
                 case Player.player1:
                     player1Score += 1;
                     player1Hud.SetScore(this, true, player1Score, round, null);
-                    FootballController.Instance.ShowGoalArea(false);
-                    FootballController.Instance.ShowMissArea(false);
-                    FootballController.Instance.PlayGoalAnimation();
-                    player2Hud.SetScore(this, false, player2Score, round, () => StartCoroutine(FootballController.Instance.WaitForResetMatch()));
+                    ((FootballController)GameMatchController.Instance).ShowGoalArea(false);
+                    ((FootballController)GameMatchController.Instance).ShowMissArea(false);
+                    ((FootballController)GameMatchController.Instance).PlayGoalAnimation();
+                    player2Hud.SetScore(this, false, player2Score, round, () => StartCoroutine(((FootballController)GameMatchController.Instance).WaitForResetMatch()));
                     break;
                 case Player.player2:
                     player2Score += 1;
                     player1Hud.SetScore(this, false, player1Score, round, null);
-                    FootballController.Instance.ShowGoalArea(false);
-                    FootballController.Instance.ShowMissArea(false);
-                    player2Hud.SetScore(this, true, player2Score, round, () => StartCoroutine(FootballController.Instance.WaitForResetMatch()));
+                    ((FootballController)GameMatchController.Instance).ShowGoalArea(false);
+                    ((FootballController)GameMatchController.Instance).ShowMissArea(false);
+                    player2Hud.SetScore(this, true, player2Score, round, () => StartCoroutine(((FootballController)GameMatchController.Instance).WaitForResetMatch()));
                     break;
             }
         }
@@ -129,6 +129,13 @@ public class ScoreController : MonoBehaviour
             player1Hud.SetScore(this, matchDataList[i].winnerId == (int)Player.player1, player1Score, i, null);
             player2Hud.SetScore(this, matchDataList[i].winnerId == (int)Player.player2, player2Score, i, null);
         }
+    }
+
+    public void SetScore(int p1Score, int p2Score)
+    {
+        //Debug.Log("SetScore : " + p1Score + " " + p2Score);
+        player1Score = p1Score;
+        player2Score = p2Score;
     }
 
     public void ChangePlayer1Name(string name)

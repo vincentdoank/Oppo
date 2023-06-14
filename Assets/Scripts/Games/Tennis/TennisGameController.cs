@@ -14,26 +14,20 @@ public class TennisPlayerData
     public int maxRound;
 }
 
-public class TennisGameController : MonoBehaviour
+public class TennisGameController : GameMatchController
 {
     public Camera player1Camera;
     public Camera player2Camera;
 
     public TennisPlayer player1;
     public TennisPlayer player2;
-    public Ball ball;
     public Transform goal;
     public GameObject missArea;
     public SwipeController swipeController;
     public Image scoreImage;
     public Image outImage;
 
-    public Weather weather;
-    public Locator locator;
-
     public ParticleSystem touchEffect;
-    public SkyController skyController;
-    public TennisScoreController scoreController;
     public TweenFade transitionAnim;
     public List<MatchData> matchDataList = new List<MatchData>();
 
@@ -46,7 +40,6 @@ public class TennisGameController : MonoBehaviour
 
     public PlayerType playerType = PlayerType.None;
     public bool isBallSaved = false;
-    public bool isStarted = false;
 
     private float shootTimer = 4f;
     private float elapsedTime;
@@ -54,20 +47,15 @@ public class TennisGameController : MonoBehaviour
     private int round;
     private int maxRound;
 
-    public Dictionary<ulong, int> clientsRoleDict = new Dictionary<ulong, int>();
-
-    public static TennisGameController Instance { get; private set; }
-
-    private void Start()
+    protected override void Start()
     {
-        Instance = this;
-
+        base.Start();
         Debug.LogWarning("runtime : " + Application.platform);
 
         elapsedTime = 0;
         //scoreController.time.SetTime(10, ForwardShoot);
 
-        EventManager.onNetworkConnected += ApplyRole;
+
         //if (NetworkController.Instance.GetClientId() == 1)
         //{
         //    StartCoroutine(GetWeatherData());
@@ -75,11 +63,24 @@ public class TennisGameController : MonoBehaviour
 
         //playerType = PlayerType.GoalKeeper;
         //OnGoalKeeperSelected();
+        StartCoroutine(WaitForApplyRole());
+    }
+
+    private IEnumerator WaitForApplyRole()
+    {
+        yield return null;
+        ApplyRole();
     }
 
     public void ApplyRole()
     {
-
+        if (GameManager.Instance.IsServer)
+        {
+            player1Camera.gameObject.SetActive(false);
+            player2Camera.gameObject.SetActive(false);
+            screenCamera.gameObject.SetActive(true);
+            return;
+        }
 #if !UNITY_EDITOR
         Debug.Log("AplyRole");
 
@@ -92,26 +93,7 @@ public class TennisGameController : MonoBehaviour
         CheckWeather();
     }
 
-    private void CheckWeather()
-    {
-        //if (playerType == PlayerType.Striker)
-        //{
-        //    StartCoroutine(GetWeatherData());
-        //}
-    }
-
-    private IEnumerator GetWeatherData()
-    {
-        float lati = 0f;
-        float longi = 0f;
-        Weather.WeatherType weatherType = Weather.WeatherType.Clear;
-        yield return locator.GetLatitudeLongitude((latitude, longitude) => { lati = latitude; longi = longitude; });
-        yield return weather.RequestWeather(lati, longi, (weather) => { weatherType = weather; });
-        Debug.LogWarning("Get Weather data : " + weatherType);
-        skyController.CheckCurrentTimeWeather(weatherType);
-    }
-
-    public void StartMatch()
+    public override void StartMatch()
     {
         isStarted = true;
         CheckWeather();
@@ -301,7 +283,7 @@ public class TennisGameController : MonoBehaviour
         ball.SendShootPosition(position);
     }
 
-    public void OnDisconnected(ulong clientId)
+    public override void OnDisconnected(ulong clientId)
     {
         if (clientsRoleDict.ContainsKey(clientId))
         {
@@ -309,7 +291,7 @@ public class TennisGameController : MonoBehaviour
         }
     }
 
-    public void SendPlayerData()
+    public override void SendPlayerData()
     {
         EventManager.onTennisDataSent?.Invoke(new TennisPlayerData
         {

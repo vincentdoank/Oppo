@@ -55,14 +55,15 @@ public class Player : MonoBehaviour
 
     protected virtual void Update()
     {
-        //if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+        //if (
+        //.playerType == FootballController.PlayerType.GoalKeeper)
         //Debug.LogWarning("playerType : " + playerType.ToString());
 
         if (playerType == PlayerType.AI)
         {
-            if (FootballController.Instance.playerType == FootballController.PlayerType.Striker)
+            if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
             {
-                if (!FootballController.Instance.scoreController.time.GetIsPaused())
+                if (!((FootballController)GameMatchController.Instance).scoreController.time.GetIsPaused())
                 {
                     isThinking = true;
                     thinkTime = Random.Range(thinkTimeMin, thinkTimeMax);
@@ -79,7 +80,7 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            else if (FootballController.Instance.playerType == FootballController.PlayerType.GoalKeeper)
+            else if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper)
             {
                 DoAction();
             }
