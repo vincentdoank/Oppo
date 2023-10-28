@@ -9,6 +9,7 @@ public class ConfigScreen : MonoBehaviour
 {
     public TMP_InputField ipInputField;
     public Button connectButton;
+    public string nextSceneName = "StaticGameplay";
 
     private void Start()
     {
@@ -24,6 +25,6 @@ public class ConfigScreen : MonoBehaviour
     {
         PlayerPrefs.SetString("ip", ipInputField.text);
         PlayerPrefs.Save();
-        SceneManager.LoadScene("StaticGameplay");
+        SceneManager.LoadScene(nextSceneName);
     }
 }

@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        //Debug.unityLogger.logEnabled = false;
         
         //controlType = ControlType.SHAKEDRAW;
         
@@ -62,6 +63,8 @@ public class GameManager : MonoBehaviour
         //EventManager.onLeaveRoom += ShowMainMenu;
 
         //HideCameraTexture();
+
+        Debug.LogWarning("isServer : " + IsServer);
     }
 
     private void OnDestroy()

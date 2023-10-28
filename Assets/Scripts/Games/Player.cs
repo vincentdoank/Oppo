@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        playerType = PlayerType.Human;
+        playerType = PlayerType.AI;
     }
 
     public void AssignBodyPart(string partName, Mesh mesh, Texture2D texture)

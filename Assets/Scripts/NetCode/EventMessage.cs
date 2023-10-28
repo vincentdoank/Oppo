@@ -126,7 +126,7 @@ namespace WTI.NetCode
 
         public void SendUnnamedMessage(string dataToSend)
         {
-            Debug.Log("data to send : " + dataToSend);
+            //Debug.Log("data to send : " + dataToSend);
             var writer = new FastBufferWriter(1100, Allocator.Temp);
             var customMessagingManager = NetworkManager.CustomMessagingManager;
             // Tip: Placing the writer within a using scope assures it will
@@ -575,7 +575,7 @@ namespace WTI.NetCode
                 {
                     listString += p1WinList[i] + ",";
                 }
-                Debug.Log("scoreList : " + listString);
+                //Debug.Log("scoreList : " + listString);
 
                 if (IsServer)
                 {
@@ -590,7 +590,7 @@ namespace WTI.NetCode
                     }
                 }
             }
-            Debug.Log("SendFootballPlayerData Succeed");
+            //Debug.Log("SendFootballPlayerData Succeed");
         }
 
         private void SendResetMatch(ulong senderClientId)
@@ -1050,7 +1050,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedDrawLineEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("received message");
+            //Debug.Log("received message");
             reader.ReadValueSafe(out int index);
             reader.ReadValueSafe(out Vector3[] points);
 
@@ -1089,7 +1089,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedFootballPositionEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedFootballPositionEventMessage message");
+            //Debug.Log("OnReceivedFootballPositionEventMessage message");
             reader.ReadValueSafe(out Vector3 position);
             reader.ReadValueSafe(out Vector3 eulerAngle);
 
@@ -1105,7 +1105,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedShootEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedShootEventMessage message");
+            //Debug.Log("OnReceivedShootEventMessage message");
             if (IsServer)
             {
                 SendShootTriggered(clientId);
@@ -1157,7 +1157,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedNextRoundEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedNextRoundEventMessage message");
+            //Debug.Log("OnReceivedNextRoundEventMessage message");
             if (IsServer)
             {
                 //SendNextRoundStarted(clientId);
@@ -1167,7 +1167,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedFootballPlayerDataEventMessage(ulong clientId, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedFootballPlayerDataEventMessage message");
+            //Debug.Log("OnReceivedFootballPlayerDataEventMessage message");
             reader.ReadValueSafe(out bool isStrikerSelected);
             reader.ReadValueSafe(out bool isGoalKeeperSelected);
             reader.ReadValueSafe(out float shootTime);
@@ -1237,7 +1237,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedBallResetEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedBallResetEventMessage message");
+            //Debug.Log("OnReceivedBallResetEventMessage message");
             if (IsServer)
             {
                 SendBallReset(client);
@@ -1270,7 +1270,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedPlayer1PositionEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedPlayer1PositionEventMessage");
+            //Debug.Log("OnReceivedPlayer1PositionEventMessage");
 
             reader.ReadValueSafe(out Vector3 position);
 
@@ -1283,7 +1283,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedPlayer2PositionEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedPlayer2PositionEventMessage");
+            //Debug.Log("OnReceivedPlayer2PositionEventMessage");
 
             reader.ReadValueSafe(out Vector3 position);
 
@@ -1296,7 +1296,7 @@ namespace WTI.NetCode
 
         protected void OnReceivedPlayer1AnimationEventMessage(ulong client, FastBufferReader reader)
         {
-            Debug.Log("OnReceivedPlayer1AnimationEventMessage message");
+            //Debug.Log("OnReceivedPlayer1AnimationEventMessage message");
 
             reader.ReadValueSafe(out string animationName);
 

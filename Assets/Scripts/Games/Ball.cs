@@ -8,6 +8,8 @@ public class Ball : MonoBehaviour
 {
     private Rigidbody rigidBody;
     public Vector3 DefPos { get; private set; }
+    public Transform defPosTransform;
+    public MeshRenderer mesh;
 
     public int bounce;
     public int maxBounce;
@@ -15,28 +17,45 @@ public class Ball : MonoBehaviour
     private float smoothness = 100f;
     public bool isShooting;
     public ParticleSystem puffEffect;
+    public ParticleSystem trailEffect;
 
     private Transform leftHand = null;
     private Transform rightHand = null;
 
-    public bool isEligilble = false;
+    public bool isEligible = false;
+    public bool countered = false;
+    public bool isScored = false;
 
     public LayerMask goalLayerMask;
 
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-        DefPos = transform.position;
+        DefPos = defPosTransform == null ? transform.position : defPosTransform.position;//transform.position;
         isShooting = false;
+        countered = false;
     }
 
     public void Reset()
     {
         Debug.Log("reset");
-        PlayPuffParticle();
-        StartCoroutine(WaitForReset());
-        EventManager.onBallPositionResetted(GameManager.Instance.GetClientId());
-        isEligilble = false;
+        if (GameManager.Instance.IsServer)
+        {
+            PlayPuffParticle();
+            StartCoroutine(WaitForReset());
+            EventManager.onBallPositionResetted(GameManager.Instance.GetClientId());
+            isEligible = false;
+            countered = false;
+            bounce = 0;
+            isScored = false;
+        }
+        trailEffect.gameObject.SetActive(false);
+        mesh.enabled = false;
+    }
+
+    public void ResetBounce()
+    {
+        bounce = 0;
     }
 
     public void SetPosition(Vector3 position)
@@ -46,7 +65,10 @@ public class Ball : MonoBehaviour
 
     public void PlayPuffParticle()
     {
-        puffEffect.Play();
+        if (puffEffect)
+        {
+            puffEffect.Play();
+        }
     }
 
     private IEnumerator WaitForReset()
@@ -84,6 +106,8 @@ public class Ball : MonoBehaviour
 
     public void Shoot(Vector3 shootPosition)
     {
+        mesh.enabled = true;
+        trailEffect.gameObject.SetActive(true);
         Debug.LogWarning("Shoot : " + shootPosition);
         //Reset();
         //
@@ -114,18 +138,22 @@ public class Ball : MonoBehaviour
     //SERVER
     public void SendShootPosition(Vector3 shootPosition)
     {
+        mesh.enabled = true;
+        trailEffect.gameObject.SetActive(true);
         ((FootballController)GameMatchController.Instance).goalKeeper.canCatch = true;
         rigidBody.isKinematic = false;
         isShooting = true;
         Vector3 direction = shootPosition - transform.position;
         Vector3 upForce = Vector3.zero;
-        if (shootPosition.y > transform.position.y)
-        {
-            upForce = Vector3.up * 6f;
-        }
-        rigidBody.AddForce(direction.normalized * 12f + upForce, ForceMode.Impulse);
+        //if (shootPosition.y > transform.position.y)
+        //{
+        //    upForce = Vector3.up * 2f;
+        //}
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.AddForce(direction.normalized * 20f + upForce, ForceMode.Impulse);
         ((FootballController)GameMatchController.Instance).ShowGoalArea(true);
         ((FootballController)GameMatchController.Instance).ShowMissArea(true);
+        ResetBounce();
     }
 
     public void AddForce(Vector3 force)
@@ -135,27 +163,39 @@ public class Ball : MonoBehaviour
         //rigidBody.AddForce(force, ForceMode.VelocityChange);        
     }
 
+    public void Counter(Vector3 force)
+    {
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.AddForce(force, ForceMode.Impulse);
+        countered = true;
+    }
+
     public void Shoot()
     {
         //Reset();
+        isEligible = false;
         isShooting = true;
         rigidBody.AddTorque(Vector3.forward * 3f);
         ((FootballController)GameMatchController.Instance).goalKeeper.canCatch = true;
         ((FootballController)GameMatchController.Instance).scoreController.time.Pause(true);
         ((FootballController)GameMatchController.Instance).ShowGoalArea(true);
         ((FootballController)GameMatchController.Instance).ShowMissArea(true);
+        ResetBounce();
     }
 
     public void Shoot(Vector3 force, float randomize)
     {
+        mesh.enabled = true;
+        trailEffect.gameObject.SetActive(true);
         rigidBody.AddForce(new Vector3(force.x + randomize, force.y, force.z), ForceMode.Impulse);
+        ResetBounce();
     }
 
     private void Update()
     {
         //if (!GameManager.Instance.IsServer && ((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
         //if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.Striker)
-        if(GameManager.Instance.IsServer)
+        if (GameManager.Instance.IsServer)
         {
             //rigidBody.isKinematic = false;
             EventManager.onFootballUpdated?.Invoke(GameManager.Instance.GetClientId(), transform.position, transform.localEulerAngles);
@@ -193,38 +233,96 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.gameObject.layer == goalLayerMask)
+        if (GameManager.Instance.IsServer)
         {
-            if (bounce == 0)
+            if (collision.transform.gameObject.layer == goalLayerMask)
             {
-                isEligilble = true;
+                if (bounce == 0)
+                {
+                    isEligible = true;
+                }
+            }
+
+            if (collision.transform.tag != "Net")
+            {
+                bounce += 1;
+            }
+            if (bounce == maxBounce)
+            {
+                if (isEligible && !countered)
+                {
+                    Player1Win();
+                }
+                else
+                {
+                    Player2Win();
+                }
+            }
+            //else if (bounce > maxBounce)
+            //{
+            //    Player2Win();
+            //}
+        }
+    }
+
+    public void CheckMissGround()
+    {
+        if (GameManager.Instance.IsServer)
+        {
+            if (bounce == 0 && !isEligible)
+            {
+                Player2Win();
             }
         }
-        
-        bounce += 1;
+    }
 
-        if (bounce == 2 && isEligilble)
+    private void Player1Win()
+    {
+        if (isScored) return;
+        isScored = true;
+        Debug.LogWarning("Player1Win");
+        if (!((FootballController)GameMatchController.Instance).isBallSaved)
         {
-            if (!((FootballController)GameMatchController.Instance).isBallSaved)
+            ((FootballController)GameMatchController.Instance).matchDataList.Add(new MatchData { match = ((FootballController)GameMatchController.Instance).scoreController.GetRound(), winnerId = (int)ScoreController.Player.player1 });
+            ((FootballController)GameMatchController.Instance).scoreController.AddScore(ScoreController.Player.player1);
+            //((FootballController)GameMatchController.Instance).NextMatch();
+            Debug.Log("clientdId : " + GameManager.Instance.GetClientId());
+            Debug.Log("get player 1 score : " + ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score());
+
+            FootballPlayerData data = new FootballPlayerData
             {
-                ((FootballController)GameMatchController.Instance).matchDataList.Add(new MatchData { match = ((FootballController)GameMatchController.Instance).scoreController.GetRound(), winnerId = (int)ScoreController.Player.player1 });
-                ((FootballController)GameMatchController.Instance).scoreController.AddScore(ScoreController.Player.player1);
-                //((FootballController)GameMatchController.Instance).NextMatch();
-                Debug.Log("clientdId : " + GameManager.Instance.GetClientId());
-                Debug.Log("get player 1 score : " + ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score());
+                isStrikerSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
+                isGoalKeeperSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
+                p1Score = GameMatchController.Instance.scoreController.GetPlayer1Score(),
+                p2Score = GameMatchController.Instance.scoreController.GetPlayer2Score(),
+                matchDataList = ((FootballController)GameMatchController.Instance).matchDataList
+            };
+            EventManager.onFootballDataSent?.Invoke(data);
 
-                FootballPlayerData data = new FootballPlayerData
-                {
-                    isStrikerSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
-                    isGoalKeeperSelected = GameMatchController.Instance.clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
-                    p1Score = GameMatchController.Instance.scoreController.GetPlayer1Score(),
-                    p2Score = GameMatchController.Instance.scoreController.GetPlayer2Score(),
-                    matchDataList = ((FootballController)GameMatchController.Instance).matchDataList
-                };
-                EventManager.onFootballDataSent?.Invoke(data);
+            //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer2Score());
+        }
+    }
 
-                //EventManager.onScoreUpdated?.Invoke(GameManager.Instance.GetClientId(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score(), ((FootballController)GameMatchController.Instance).scoreController.GetPlayer2Score());
-            }
+    public void Player2Win()
+    {
+        if (isScored) return;
+        isScored = true;
+        Debug.LogWarning("Player2Win");
+        if (!((FootballController)GameMatchController.Instance).CheckCurrentMatch())
+        {
+            ((FootballController)GameMatchController.Instance).PlayMissAnimation();
+
+            ((FootballController)GameMatchController.Instance).matchDataList.Add(new MatchData { match = ((FootballController)GameMatchController.Instance).scoreController.GetRound(), winnerId = (int)ScoreController.Player.player2 });
+            ((FootballController)GameMatchController.Instance).scoreController.AddScore(ScoreController.Player.player2);
+            FootballPlayerData data = new FootballPlayerData
+            {
+                isStrikerSelected = ((FootballController)GameMatchController.Instance).clientsRoleDict.ContainsValue((int)FootballController.PlayerType.Striker),
+                isGoalKeeperSelected = ((FootballController)GameMatchController.Instance).clientsRoleDict.ContainsValue((int)FootballController.PlayerType.GoalKeeper),
+                p1Score = ((FootballController)GameMatchController.Instance).scoreController.GetPlayer1Score(),
+                p2Score = ((FootballController)GameMatchController.Instance).scoreController.GetPlayer2Score(),
+                matchDataList = ((FootballController)GameMatchController.Instance).matchDataList
+            };
+            EventManager.onFootballDataSent?.Invoke(data);
         }
     }
 }

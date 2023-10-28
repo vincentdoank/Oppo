@@ -70,7 +70,7 @@ public class FootballController : GameMatchController
             screenScoreController.gameObject.SetActive(false);
             scoreController.gameObject.SetActive(true);
         }
-
+        Debug.LogWarning("screen");
         elapsedTime = 0;
         //scoreController.time.SetTime(10, ForwardShoot);
 
@@ -95,9 +95,9 @@ public class FootballController : GameMatchController
         }
 
 #if !UNITY_EDITOR
-        Debug.Log("AplyRole");
-        //OnGoalKeeperSelected();
-        OnStrikerSelected();
+        Debug.Log("ApplyRole");
+        OnGoalKeeperSelected();
+        //OnStrikerSelected();
         //OnDrawLineSelected();
 #else
         screenCamera.gameObject.SetActive(true);
@@ -282,9 +282,9 @@ public class FootballController : GameMatchController
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
+        ball.Reset();
         if (GameManager.Instance.IsServer)
         {
-            ball.Reset();
             scoreController.time.SetTime(10, () =>
             {
                 EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());
@@ -301,13 +301,13 @@ public class FootballController : GameMatchController
         {
             striker.PlayWinAnimation();
             goalKeeper.PlayLoseAnimation();
-            WinnerInfoPopup.Instance.Show(PlayerType.Striker);
+            //WinnerInfoPopup.Instance.Show(PlayerType.Striker);
         }
         else
         {
             striker.PlayLoseAnimation();
             goalKeeper.PlayWinAnimation();
-            WinnerInfoPopup.Instance.Show(PlayerType.GoalKeeper);
+            //WinnerInfoPopup.Instance.Show(PlayerType.GoalKeeper);
         }
     }
 
@@ -330,11 +330,8 @@ public class FootballController : GameMatchController
             swipeController.CanSwipe(true);
             swipeController.ClearLine();
         }
-        if (GameManager.Instance.IsServer)
-        {
-            ball.Reset();
-        }
-        CrowdManager.Instance.CrowdRandom();
+        ball.Reset();
+        //CrowdManager.Instance.CrowdRandom();
     }
 
     public IEnumerator WaitForResetMatch()
@@ -351,7 +348,7 @@ public class FootballController : GameMatchController
         matchDataList.Clear();
         scoreController.ResetMatch();
         ball.Reset();
-        CrowdManager.Instance.CrowdRandom();
+        //CrowdManager.Instance.CrowdRandom();
         scoreController.time.SetTime(10, () =>
         {
             EventManager.onShootTimerEnded?.Invoke(GameManager.Instance.GetClientId());

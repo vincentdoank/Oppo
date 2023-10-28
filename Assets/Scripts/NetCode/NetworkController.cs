@@ -32,15 +32,16 @@ namespace WTI.NetCode
 
         private IEnumerator Start()
         {
-        //    if (PlayerPrefs.HasKey("ip"))
-        //    {
-        //        NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = PlayerPrefs.GetString("ip");
-        //    }
-        //    else
-        //    {
-        //        SceneManager.LoadScene("ConfigScreen");
-        //    }
-        //    yield return null;
+            if (PlayerPrefs.HasKey("ip"))
+            {
+                NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = PlayerPrefs.GetString("ip");
+            }
+            else
+            {
+                SceneManager.LoadScene("ConfigScreen");
+            }
+            Debug.LogWarning("ip : " + NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
+            yield return null;
             Debug.Log("START");
             Instance = this;
             NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
@@ -114,7 +115,7 @@ namespace WTI.NetCode
                     {
                         errorMessage = "Server connected";
                         EventManager.onNetworkConnected?.Invoke();
-                        Debug.LogWarning("server started");
+                        Debug.LogWarning("server started"); 
                     }
                     else
                     {
@@ -177,7 +178,7 @@ namespace WTI.NetCode
 
         public void OnServerStarted()
         {
-            Debug.Log("server started");
+            Debug.LogWarning("OnServerStarted");
             //GameManager.Instance.ShowExitRoomButton();
             //((FootballController)GameMatchController.Instance).ApplyRole();
 
@@ -236,7 +237,7 @@ namespace WTI.NetCode
 
         public void OnWebCameraUsed()
         {
-            ipText.text = "WebCam open";
+            //ipText.text = "WebCam open";
             //GameManager.Instance.ShowCameraTexture();
         }
 

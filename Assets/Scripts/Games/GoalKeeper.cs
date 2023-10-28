@@ -28,6 +28,7 @@ public class GoalKeeper : Player
     public bool canCatch = true;
 
     private Vector3 calibrationOffset;
+    public bool isTennisPlayer = false;
 
     private void Start()
     {
@@ -122,13 +123,16 @@ public class GoalKeeper : Player
         pos.x = target.position.x;
         goalKeeper.position = pos;
 
-        Vector3 handPos = hands.position;
-        handPos.y = target.position.y;
-        hands.position = handPos;
+        if (hands)
+        {
+            Vector3 handPos = hands.position;
+            handPos.y = target.position.y;
+            hands.position = handPos;
+        }
 
         if (((FootballController)GameMatchController.Instance).playerType == FootballController.PlayerType.GoalKeeper)
         {
-            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, target.position);
+            EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, transform.position);
             //Debug.LogWarning("Send GK pos");
         }
         //float angle = acceleration.x * 60f * 2f;
@@ -146,19 +150,21 @@ public class GoalKeeper : Player
         //goalKeeper.position = position;
         if (position.x > goalKeeper.position.x + 0.08f)
         {
-            animator.SetFloat("Acceleration", 0.2f);
+            animator.SetFloat("Acceleration", -0.2f);
         }
         else if (position.x < goalKeeper.position.x - 0.08f)
         {
-            animator.SetFloat("Acceleration", -0.2f);
+            animator.SetFloat("Acceleration", 0.2f);
         }
         else
         {
             animator.SetFloat("Acceleration", 0f);
         }
         goalKeeper.position = Vector3.Lerp(goalKeeper.position, position, Time.deltaTime * 30f);
-        hands.position = handPosition;
-
+        if (hands)
+        {
+            hands.position = handPosition;
+        }
     }
 
     public void Calibrate()
@@ -185,21 +191,23 @@ public class GoalKeeper : Player
                 targetPos.x = ((FootballController)GameMatchController.Instance).goal.position.x - 5;
             }
 
-            if (targetPos.x > goalKeeper.position.x + 0.08f)
-            {
-                animator.SetFloat("Acceleration", 0.2f);
-            }
-            else if (targetPos.x < goalKeeper.position.x - 0.08f)
-            {
-                animator.SetFloat("Acceleration", -0.2f);
-            }
-            else
-            {
-                animator.SetFloat("Acceleration", 0f);
-            }
+            //if (targetPos.x > goalKeeper.position.x + 0.08f)
+            //{
+            //    animator.SetFloat("Acceleration", -0.2f);
+            //}
+            //else if (targetPos.x < goalKeeper.position.x - 0.08f)
+            //{
+            //    animator.SetFloat("Acceleration", 0.2f);
+            //}
+            //else
+            //{
+            //    animator.SetFloat("Acceleration", 0f);
+            //}
 
             targetPos.y = pos.y;
             targetPos.z = pos.z;
+            animator.SetFloat("Acceleration", Vector3.Distance(targetPos, goalKeeper.position) * 1000);
+            Debug.LogWarning("distance : " + Vector3.Distance(targetPos, goalKeeper.position));
             goalKeeper.position = Vector3.Lerp(goalKeeper.position, targetPos, Time.deltaTime * 5f);
             EventManager.onGoalKeeperPositionUpdated?.Invoke(GameManager.Instance.GetClientId(), pos, goalKeeper.position);
         }
@@ -298,4 +306,21 @@ public class GoalKeeper : Player
     //    }
     //    return base.CheckIdle();
     //}
+
+    public void PlayAnimation(string animationName)
+    {
+        animator.SetTrigger(animationName);
+    }
+
+    public void AddBallForce(float forwardForce)
+    {
+        StartCoroutine(WaitBallForce(forwardForce));
+    }
+
+    private IEnumerator WaitBallForce(float forwardForce)
+    {
+        yield return new WaitForSeconds(0.1f);
+        float sideForce = Random.Range(-2, 2f);
+        GameMatchController.Instance.ball.Counter(new Vector3(sideForce, 4f, -forwardForce));
+    }
 }
